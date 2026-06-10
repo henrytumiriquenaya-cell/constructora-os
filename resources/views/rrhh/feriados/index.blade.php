@@ -36,5 +36,5 @@
         </table>
     <div class="d-flex justify-content-center mt-3">
         {{ $feriados->links() }}
-    </div></div></div>
+    </div></div></div></div>
 @endsection

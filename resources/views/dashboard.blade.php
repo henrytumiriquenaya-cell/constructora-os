@@ -79,7 +79,7 @@
             <i class="fas fa-arrow-right me-1"></i> Ver todos
         </a>
     </div>
-    <div class="table-responsive">
+    <div class="table-wrapper"><div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-head-premium">
                 <tr>

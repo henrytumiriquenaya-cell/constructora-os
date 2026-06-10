@@ -104,6 +104,9 @@
                     @if(Auth::user()->hasRole(['admin','gerente','jefe obra','logist']) && \Illuminate\Support\Facades\Route::has('operativa.inventario.index'))
                         <a href="{{ route('operativa.inventario.index') }}" class="nav-link {{ request()->routeIs('operativa.inventario.*') ? 'active-link' : '' }}"><i class="ti ti-packages"></i> Inventario</a>
                     @endif
+                    @if(Auth::user()->hasRole(['admin','gerente','jefe obra','logist']) && \Illuminate\Support\Facades\Route::has('operativa.movimientos.index'))
+                        <a href="{{ route('operativa.movimientos.index') }}" class="nav-link {{ request()->routeIs('operativa.movimientos.*') ? 'active-link' : '' }}"><i class="ti ti-arrows-right-left"></i> Movimientos</a>
+                    @endif
                     @if(Auth::user()->hasRole(['admin','gerente','jefe obra']) && \Illuminate\Support\Facades\Route::has('operativa.paralizaciones.index'))
                         <a href="{{ route('operativa.paralizaciones.index') }}" class="nav-link {{ request()->routeIs('operativa.paralizaciones.*') ? 'active-link' : '' }}"><i class="ti ti-player-pause"></i> Paralizaciones</a>
                     @endif
@@ -278,5 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+@stack('scripts')
 </body>
 </html>

@@ -1,12 +1,12 @@
 /* ============================================================
    PREMIUM THEME v2 — Constructora Sistema de Gestión
-   Paleta: Slate #0f172a · Indigo #6366f1 · Fondo #f8fafc
+   Paleta: Slate #0f172a · Indigo #6366f1 · Fondo var(--topbar-bg)
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --sidebar-bg:        #0f172a;
+  --sidebar-bg:        #151521;
   --sidebar-text:      #94a3b8;
   --sidebar-hover-bg:  rgba(99,102,241,0.08);
   --sidebar-active-bg: rgba(99,102,241,0.15);
@@ -15,25 +15,25 @@
   --indigo:            #6366f1;
   --indigo-dark:       #4f46e5;
   --indigo-light:      #e0e7ff;
-  --page-bg:           #f8fafc;
-  --topbar-bg:         #ffffff;
-  --topbar-border:     #e2e8f0;
-  --card-border:       rgba(0,0,0,0.07);
-  --text-primary:      #0f172a;
-  --text-secondary:    #64748b;
-  --text-muted:        #94a3b8;
-  /* Badge colors */
-  --badge-green-bg:    #EAF3DE;
-  --badge-green-text:  #3B6D11;
-  --badge-yellow-bg:   #FAEEDA;
-  --badge-yellow-text: #854F0B;
-  --badge-red-bg:      #FCEBEB;
-  --badge-red-text:    #A32D2D;
-  --badge-blue-bg:     #e0f2fe;
-  --badge-blue-text:   #0369a1;
+  --page-bg:           #0E0E16; /* Dark background */
+  --topbar-bg:         #1A1A27; /* Dark panel */
+  --topbar-border:     #2D2D44;
+  --card-border:       #2D2D44;
+  --text-primary:      #F8FAFC;
+  --text-secondary:    #94A3B8;
+  --text-muted:        #64748B;
+  /* Badge colors dark */
+  --badge-green-bg:    rgba(16, 185, 129, 0.2);
+  --badge-green-text:  #34d399;
+  --badge-yellow-bg:   rgba(245, 158, 11, 0.2);
+  --badge-yellow-text: #fbbf24;
+  --badge-red-bg:      rgba(239, 68, 68, 0.2);
+  --badge-red-text:    #f87171;
+  --badge-blue-bg:     rgba(59, 130, 246, 0.2);
+  --badge-blue-text:   #60a5fa;
   /* Button accent */
-  --btn-edit-border:   #378ADD;
-  --btn-delete-border: #E24B4A;
+  --btn-edit-border:   #3b82f6;
+  --btn-delete-border: #ef4444;
 }
 
 /* ---- Base ---- */
@@ -61,7 +61,7 @@ body {
   overflow-y: auto;
   max-height: 100vh;
   scrollbar-width: thin;
-  scrollbar-color: #1e293b transparent;
+  scrollbar-color: var(--topbar-bg) transparent;
   width: 260px;
   min-width: 260px;
   z-index: 1000;
@@ -69,7 +69,7 @@ body {
 
 .sidebar-brand {
   padding: 20px 20px 16px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--topbar-bg);
 }
 
 .sidebar-brand .brand-icon {
@@ -110,7 +110,7 @@ body {
   color: white; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
 }
 
-.sidebar-user .user-name  { color: #e2e8f0; font-size: 0.82rem; font-weight: 600; }
+.sidebar-user .user-name  { color: var(--card-border); font-size: 0.82rem; font-weight: 600; }
 .sidebar-user .user-role  { color: var(--sidebar-label); font-size: 0.72rem; text-transform: capitalize; }
 
 /* Accordion sections */
@@ -173,7 +173,7 @@ body {
 
 .sidebar .nav-link:hover {
   background: rgba(255,255,255,0.05);
-  color: #e2e8f0;
+  color: var(--card-border);
 }
 
 .sidebar .nav-link.active-link {
@@ -193,7 +193,7 @@ body {
 /* Logout */
 .sidebar-logout {
   margin: auto 12px 16px;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--topbar-bg);
   padding-top: 12px;
 }
 
@@ -258,7 +258,7 @@ body {
 .topbar-bell {
   position: relative;
   width: 34px; height: 34px;
-  background: #f8fafc;
+  background: var(--topbar-bg);
   border: 1px solid var(--topbar-border);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -287,10 +287,10 @@ body {
 }
 
 .page-card {
-  background: white;
+  background: var(--topbar-bg);
   border-radius: 12px;
   border: 0.5px solid var(--card-border);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   padding: 24px;
   margin-bottom: 20px;
 }
@@ -299,10 +299,10 @@ body {
    STAT CARDS  — left border accent
    ============================================================ */
 .stat-card {
-  background: white;
+  background: var(--topbar-bg);
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   padding: 18px 20px;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
   border-left: 4px solid var(--indigo);
@@ -345,62 +345,81 @@ body {
    TABLES  — dark header, alternating rows, specific padding
    ============================================================ */
 .table-wrapper {
-  background: white;
+  background: var(--topbar-bg);
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--card-border);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.table { margin: 0; }
+/* Override Bootstrap 5 table CSS variables — CRITICAL for dark mode */
+.table {
+  margin: 0;
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--text-primary);
+  --bs-table-striped-bg: var(--page-bg);
+  --bs-table-striped-color: var(--text-primary);
+  --bs-table-hover-bg: rgba(99,102,241,0.1);
+  --bs-table-hover-color: var(--text-primary);
+  --bs-table-border-color: var(--card-border);
+  --bs-table-active-bg: rgba(99,102,241,0.15);
+  color: var(--text-primary);
+}
 
 /* THEAD — dark bg */
+.table thead,
 .table thead th,
+.table-head-premium,
 .table-head-premium th {
-  background: #1e293b !important;
+  background: #1A2235 !important;
   color: #94a3b8 !important;
   font-size: 11px !important;
   font-weight: 600 !important;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border-bottom: none !important;
+  border-bottom: 1px solid var(--card-border) !important;
   border-top: none !important;
   padding: 11px 14px !important;
   white-space: nowrap;
 }
 
 /* Override old classes */
-.table-secondary, .table-dark { background: #1e293b !important; color: #94a3b8 !important; }
+.table-secondary, .table-dark { background: var(--topbar-bg) !important; color: #94a3b8 !important; }
 .table-secondary th, .table-dark th { color: #94a3b8 !important; }
 
-/* TBODY — cells */
-.table tbody td {
-  padding: 11px 14px;
-  vertical-align: middle;
-  border: none;
-  color: var(--text-primary);
-  font-size: 0.84rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-/* Alternating rows */
-.table tbody tr:nth-child(odd)  { background: #ffffff; }
-.table tbody tr:nth-child(even) { background: #f8fafc; }
-
-/* Hover */
+/* TBODY — rows dark */
 .table tbody tr {
+  background: var(--topbar-bg) !important;
   transition: background-color 0.15s ease;
 }
 
+.table tbody tr:nth-child(even) {
+  background: rgba(0,0,0,0.15) !important;
+}
+
 .table tbody tr:hover {
-  background-color: #eff6ff !important;
+  background: rgba(99,102,241,0.1) !important;
+}
+
+/* TBODY — cells */
+.table tbody td,
+.table td,
+.table th {
+  padding: 11px 14px;
+  vertical-align: middle;
+  border: none !important;
+  border-bottom: 1px solid var(--card-border) !important;
+  color: var(--text-primary) !important;
+  font-size: 0.84rem;
+  background: transparent !important;
 }
 
 /* Footer */
 .table tfoot td, .table tfoot th {
-  background: #f8fafc !important;
+  background: #1A2235 !important;
   font-weight: 600;
-  border-top: 1px solid #e2e8f0 !important;
+  color: var(--text-primary) !important;
+  border-top: 1px solid var(--card-border) !important;
   padding: 11px 14px;
 }
 
@@ -471,12 +490,12 @@ body {
    FORMS
    ============================================================ */
 .form-control, .form-select {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 0.865rem;
   color: var(--text-primary);
-  background: white;
+  background: var(--page-bg);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -520,45 +539,45 @@ body {
 }
 
 .btn-secondary, .btn-outline-secondary {
-  background: white !important;
-  border-color: #d1d5db !important;
+  background: transparent !important;
+  border-color: var(--card-border) !important;
   color: var(--text-primary) !important;
 }
 .btn-secondary:hover, .btn-outline-secondary:hover {
-  background: #f8fafc !important;
+  background: var(--topbar-bg) !important;
   border-color: #9ca3af !important;
 }
 
 /* Edit button — blue border */
 .btn-warning, .btn-edit {
-  background: white !important;
+  background: transparent !important;
   border: 1.5px solid var(--btn-edit-border) !important;
   color: var(--btn-edit-border) !important;
 }
 .btn-warning:hover, .btn-edit:hover {
-  background: #eff6ff !important;
+  background: rgba(99,102,241,0.1) !important;
   color: #1d4ed8 !important;
 }
 
 /* Delete button — red border */
 .btn-danger, .btn-delete {
-  background: white !important;
+  background: transparent !important;
   border: 1.5px solid var(--btn-delete-border) !important;
   color: var(--btn-delete-border) !important;
 }
 .btn-danger:hover, .btn-delete:hover {
-  background: #fff1f2 !important;
-  color: #991b1b !important;
+  background: rgba(239,68,68,0.15) !important;
+  color: #f87171 !important;
 }
 
 /* Info / view */
 .btn-info {
-  background: white !important;
+  background: transparent !important;
   border: 1.5px solid #0ea5e9 !important;
   color: #0ea5e9 !important;
 }
 .btn-info:hover {
-  background: #f0f9ff !important;
+  background: rgba(14,165,233,0.1) !important;
 }
 
 .btn-success {
@@ -599,13 +618,13 @@ body {
    ============================================================ */
 .card {
   border-radius: 10px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
 .card-header {
-  background: white !important;
-  border-bottom: 1px solid #f1f5f9 !important;
+  background: var(--topbar-bg) !important;
+  border-bottom: 1px solid var(--card-border) !important;
   border-radius: 10px 10px 0 0 !important;
   font-weight: 600;
   padding: 14px 20px;
@@ -617,7 +636,7 @@ body {
 .pagination .page-link {
   border-radius: 6px !important;
   margin: 0 2px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--card-border);
   color: var(--text-secondary);
   font-size: 0.82rem;
   padding: 6px 12px;
@@ -648,8 +667,8 @@ body {
 
 .nav-tabs .nav-link.active {
   color: var(--indigo);
-  border-color: #e2e8f0 #e2e8f0 white;
-  background: white;
+  border-color: var(--card-border) var(--card-border) var(--topbar-bg);
+  background: var(--topbar-bg);
   font-weight: 600;
 }
 
@@ -657,7 +676,7 @@ body {
    PROGRESS BARS
    ============================================================ */
 .progress {
-  background: #e2e8f0;
+  background: var(--card-border);
   border-radius: 4px;
   height: 6px;
 }
@@ -693,20 +712,21 @@ body {
    CODE
    ============================================================ */
 code {
-  background: #f1f5f9;
-  color: #6366f1;
+  background: rgba(99,102,241,0.1);
+  color: #a5b4fc;
   padding: 2px 7px;
   border-radius: 4px;
   font-size: 0.82em;
 }
 
 /* ============================================================
-   DROPDOWN / MODAL
+   DROPDOWN / MODAL — DARK
    ============================================================ */
 .dropdown-menu {
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+  border: 1px solid var(--card-border);
+  background: var(--topbar-bg) !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
   font-size: 0.84rem;
 }
 
@@ -714,27 +734,177 @@ code {
   border-radius: 6px;
   margin: 1px 4px;
   padding: 7px 12px;
+  color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(99,102,241,0.1) !important;
+  color: var(--indigo) !important;
 }
 
 .modal-content {
   border-radius: 14px;
-  border: none;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+  background: var(--topbar-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+.modal-header, .modal-footer {
+  border-color: var(--card-border) !important;
+}
+
+.modal-title {
+  color: var(--text-primary) !important;
 }
 
 /* ============================================================
    UTILITY
    ============================================================ */
 .text-indigo { color: var(--indigo); }
-.bg-indigo   { background: var(--indigo-light); }
+.bg-indigo   { background: rgba(99,102,241,0.15); }
 
-/* Column Acciones always visible */
-td:last-child, th:last-child {
-  position: sticky;
-  right: 0;
-  z-index: 1;
+/* Force body text in Bootstrap dark overrides */
+.text-dark { color: var(--text-primary) !important; }
+.text-muted { color: var(--text-muted) !important; }
+body, p, h1, h2, h3, h4, h5, h6, span, div, li, a:not([style]) { color: inherit; }
+
+/* Form check labels */
+.form-check-label { color: var(--text-secondary) !important; }
+.form-text { color: var(--text-muted) !important; }
+
+/* Input group dark */
+.input-group-text {
+  background: var(--page-bg) !important;
+  border-color: var(--card-border) !important;
+  color: var(--text-secondary) !important;
 }
 
-td:last-child {
-  background: inherit;
+/* Pagination dark */
+.pagination .page-link {
+  background: var(--topbar-bg) !important;
+  color: var(--text-secondary) !important;
 }
+
+.pagination .page-link:hover {
+  background: rgba(99,102,241,0.15) !important;
+  color: var(--indigo) !important;
+}
+
+/* Alert close button */
+.btn-close { filter: invert(1) grayscale(1); }
+
+/* hr lines */
+hr { border-color: var(--card-border); opacity: 1; }
+
+/* ============================================================
+   FORMS — Global Dark Mode Override
+   (Fixes all inputs, selects, textareas to match dark theme)
+   ============================================================ */
+.form-control,
+.form-select,
+.form-control-sm,
+.form-select-sm,
+textarea.form-control {
+  background-color: var(--page-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control::placeholder,
+.form-select::placeholder,
+textarea.form-control::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea.form-control:focus {
+  background-color: var(--page-bg) !important;
+  border-color: var(--indigo) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
+  outline: none;
+}
+
+.form-control:disabled,
+.form-control[readonly],
+.form-select:disabled {
+  background-color: rgba(0,0,0,0.2) !important;
+  color: var(--text-secondary) !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Dropdown options dark */
+select option {
+  background: #1e1e30 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Form labels */
+.form-label {
+  color: var(--text-secondary) !important;
+  font-size: 0.83rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+/* form-section-title */
+.form-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 4px;
+}
+
+/* form-divider */
+.form-divider {
+  border-color: var(--card-border);
+  margin: 20px 0;
+}
+
+/* Is-invalid dark */
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.12) !important;
+}
+
+.invalid-feedback { color: #f87171 !important; font-size: 0.78rem; }
+.valid-feedback   { color: #34d399 !important; font-size: 0.78rem; }
+
+/* ============================================================
+   MULTI-ROW FORM (Movimientos) — Compact table inputs
+   ============================================================ */
+#tabla-materiales .form-select-sm,
+#tabla-materiales .form-control-sm {
+  font-size: 0.8rem !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
+  min-height: unset !important;
+}
+
+#tabla-materiales textarea.form-control-sm {
+  min-height: 36px !important;
+  line-height: 1.4;
+}
+
+.fila-material td {
+  vertical-align: middle !important;
+  padding: 8px 10px !important;
+}
+
+/* Stock info color tags */
+.stock-info {
+  display: block;
+  margin-top: 3px;
+  line-height: 1.2;
+}
+

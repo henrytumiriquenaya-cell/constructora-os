@@ -13,6 +13,8 @@ use App\Http\Controllers\GestionOperativa\CotizacionController;
 use App\Http\Controllers\GestionOperativa\CuotasPagoController;
 use App\Http\Controllers\GestionOperativa\InventarioController;
 use App\Http\Controllers\GestionOperativa\MaquinariaController;
+use App\Http\Controllers\GestionOperativa\MaterialController;
+use App\Http\Controllers\GestionOperativa\MovimientoInventarioController;
 use App\Http\Controllers\GestionOperativa\ProveedorController;
 use App\Http\Controllers\RRHH\EmpleadoController;
 use Illuminate\Support\Facades\Route;
@@ -131,6 +133,22 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/proveedores/{id}/edit', [ProveedorController::class, 'edit'])->middleware('permission:proveedor')->name('operativa.proveedores.edit');
         Route::put('/proveedores/{id}', [ProveedorController::class, 'update'])->middleware('permission:proveedor')->name('operativa.proveedores.update');
         Route::delete('/proveedores/{id}', [ProveedorController::class, 'destroy'])->middleware('permission:proveedor')->name('operativa.proveedores.destroy');
+
+        // ── Materiales CRUD ──────────────────────────────────────────────────
+        Route::get('/materiales', [MaterialController::class, 'index'])->middleware('permission:material')->name('operativa.materiales.index');
+        Route::get('/materiales/create', [MaterialController::class, 'create'])->middleware('permission:material')->name('operativa.materiales.create');
+        Route::post('/materiales', [MaterialController::class, 'store'])->middleware('permission:material')->name('operativa.materiales.store');
+        Route::get('/materiales/{id}/edit', [MaterialController::class, 'edit'])->middleware('permission:material')->name('operativa.materiales.edit');
+        Route::put('/materiales/{id}', [MaterialController::class, 'update'])->middleware('permission:material')->name('operativa.materiales.update');
+        Route::delete('/materiales/{id}', [MaterialController::class, 'destroy'])->middleware('permission:material')->name('operativa.materiales.destroy');
+
+        // ── Movimientos de Inventario CRUD ───────────────────────────────────
+        Route::get('/movimientos', [MovimientoInventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.movimientos.index');
+        Route::get('/movimientos/create', [MovimientoInventarioController::class, 'create'])->middleware('permission:inventario')->name('operativa.movimientos.create');
+        Route::post('/movimientos', [MovimientoInventarioController::class, 'store'])->middleware('permission:inventario')->name('operativa.movimientos.store');
+        Route::get('/movimientos/{id}/edit', [MovimientoInventarioController::class, 'edit'])->middleware('permission:inventario')->name('operativa.movimientos.edit');
+        Route::put('/movimientos/{id}', [MovimientoInventarioController::class, 'update'])->middleware('permission:inventario')->name('operativa.movimientos.update');
+        Route::delete('/movimientos/{id}', [MovimientoInventarioController::class, 'destroy'])->middleware('permission:inventario')->name('operativa.movimientos.destroy');
     });
 
     Route::prefix('recursos-humanos')->group(function () {
