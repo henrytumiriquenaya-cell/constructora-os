@@ -68,80 +68,68 @@
 {{-- Tabla ───────────────────────────────────────────────── --}}
 <div class="table-wrapper">
     <div class="table-responsive">
-        <table class="table table-hover table-interactive align-middle">
+        <table class="table table-bordered table-hover table-sm align-middle table-interactive">
             <thead class="table-head-premium">
                 <tr>
-                    <th>#</th>
-                    <th>Nombre del Material</th>
-                    <th class="text-end">Cantidad</th>
-                    <th>Descripción</th>
-                    <th>Destino (Proyecto)</th>
-                    <th class="text-center">Acciones</th>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Unidad</th>
+                    <th>Precio Ref.</th>
+                    <th>Stock Mín.</th>
+                    <th>Estado Stock</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($materiales as $m)
+            @forelse($materiales as $m)
+                @php
+                    $stockBadge = match(true) {
+                        is_null($m->stock_minimo)        => ['secondary', 'Sin límite'],
+                        ($m->stock_actual ?? 0) <= 0     => ['danger',    'Sin stock'],
+                        ($m->stock_actual ?? 0) < $m->stock_minimo => ['warning', 'Stock bajo'],
+                        default                          => ['success',   'OK'],
+                    };
+                @endphp
                 <tr>
-                    <td class="text-muted-dm small">{{ $m->id_material }}</td>
+                    <td>{{ $m->id_material }}</td>
+                    <td><code>{{ $m->codigo_interno ?? '—' }}</code></td>
+                    <td>{{ $m->nombre }}</td>
+                    <td>{{ $m->categoria ?? '—' }}</td>
+                    <td><span class="badge bg-secondary">{{ $m->unidad_medida ?? '—' }}</span></td>
+                    <td>{{ $m->precio_unitario_ref !== null ? number_format($m->precio_unitario_ref, 2) : '—' }}</td>
+                    <td>{{ $m->stock_minimo ?? '—' }}</td>
                     <td>
-                        <div class="fw-semibold">{{ $m->nombre }}</div>
-                        @if($m->codigo_interno)
-                        <small class="text-muted-dm">{{ $m->codigo_interno }}</small>
-                        @endif
+                        <span class="badge bg-{{ $stockBadge[0] }}">{{ $stockBadge[1] }}</span>
                     </td>
-                    <td class="text-end">
-                        @php $qty = (float)($m->cantidad ?? 0); @endphp
-                        <span class="badge {{ $qty > 0 ? 'badge-activo' : 'badge-cancelado' }}">
-                            {{ number_format($qty, 2) }}
-                            {{ $m->unidad_medida ?? '' }}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="text-muted-dm small">
-                            {{ Str::limit($m->descripcion ?? '—', 60) }}
-                        </span>
-                    </td>
-                    <td>
-                        @if($m->proyecto)
-                            <span class="badge badge-en_ejecucion">
-                                <i class="ti ti-building me-1"></i>
-                                {{ Str::limit($m->proyecto->nombre_proyecto, 30) }}
-                            </span>
-                        @else
-                            <span class="text-muted-dm small">Sin destino</span>
-                        @endif
-                    </td>
-                    <td class="text-center">
+                    <td class="text-nowrap">
+                        
                         <a href="{{ route('operativa.materiales.edit', $m->id_material) }}"
-                           class="btn btn-sm btn-warning interactive-btn me-1"
-                           title="Editar">
-                            <i class="ti ti-edit"></i>
+                           class="btn btn-edit btn-sm interactive-btn">
+                            <i class="fas fa-pen"></i>
                         </a>
                         <form action="{{ route('operativa.materiales.destroy', $m->id_material) }}"
                               method="POST" class="d-inline"
-                              onsubmit="return confirm('¿Eliminar el material {{ addslashes($m->nombre) }}?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger interactive-btn" title="Eliminar">
-                                <i class="ti ti-trash"></i>
+                              onsubmit="return confirm('¿Eliminar material?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-delete btn-sm interactive-btn">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </td>
                 </tr>
-                @empty
+            @empty
                 <tr>
-                    <td colspan="6" class="text-center py-5">
-                        <i class="ti ti-box-seam" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:10px;"></i>
-                        <span class="text-muted-dm">No hay materiales registrados aún.</span>
-                    </td>
+                    <td colspan="9" class="text-center text-muted">Sin materiales registrados.</td>
                 </tr>
-                @endforelse
+            @endforelse
             </tbody>
         </table>
-    </div>
-    <div class="d-flex justify-content-center py-3">
-        {{ $materiales->links() }}
+        <div class="d-flex justify-content-center mt-3">
+            {{ $materiales->links() }}
+        </div>
     </div>
 </div>
-
 @endsection
+

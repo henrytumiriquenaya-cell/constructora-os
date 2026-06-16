@@ -11,7 +11,7 @@ class Maquinaria extends Model
     public $timestamps = false;
  
     protected $fillable = [
-        'codigo',
+        'codigo_inventario',
         'nombre',
         'tipo',
         'marca',
@@ -20,7 +20,8 @@ class Maquinaria extends Model
         'numero_serie',
         'capacidad',
         'unidad_capacidad',
-        'estado',
+        'estado_actual',
+        'fecha_adquisicion',
         'costo_hora',
         'observaciones',
     ];

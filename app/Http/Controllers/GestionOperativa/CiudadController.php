@@ -24,7 +24,7 @@ class CiudadController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre'       => 'required|string|max:100',
+            'nombre_ciudad'       => 'required|string|max:100',
             'departamento' => 'required|string|max:100',
             'pais'         => 'required|string|max:80',
         ]);
@@ -44,7 +44,7 @@ class CiudadController extends Controller
     {
         $ciudad = Ciudad::findOrFail($id);
         $data = $request->validate([
-            'nombre'       => 'required|string|max:100',
+            'nombre_ciudad'       => 'required|string|max:100',
             'departamento' => 'required|string|max:100',
             'pais'         => 'required|string|max:80',
         ]);
@@ -55,9 +55,14 @@ class CiudadController extends Controller
     }
 
     public function destroy($id)
-    {
+{
+    try {
         Ciudad::findOrFail($id)->delete();
         return redirect()->route('operativa.ciudades.index')
                          ->with('success', 'Ciudad eliminada.');
+    } catch (\Illuminate\Database\QueryException $e) {
+        return redirect()->route('operativa.ciudades.index')
+                         ->with('error', 'No se puede eliminar esta ciudad porque tiene clientes asociados.');
     }
+}
 }

@@ -22,7 +22,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Nombre / Descripción <span class="text-danger">*</span></label>
-                    <input type="text" name="nombre_maquinaria" class="form-control" value="{{ old('nombre_maquinaria', $maquinaria->nombre_maquinaria) }}" required>
+                    <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $maquinaria->nombre) }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Marca</label>
@@ -41,7 +41,7 @@
                     <label class="form-label">Costo por Hora (Bs/USD) <span class="text-danger">*</span></label>
                     <input type="number" step="0.01" name="costo_hora" class="form-control" value="{{ old('costo_hora', $maquinaria->costo_hora) }}" required>
                 </div>
-
+                
                 <div class="col-md-6">
                     <label class="form-label">Propiedad <span class="text-danger">*</span></label>
                     <select name="propiedad" class="form-select" required>
@@ -51,11 +51,11 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Estado <span class="text-danger">*</span></label>
-                    <select name="estado" class="form-select" required>
+                    <select name="estado_actual" class="form-select" required>
                         <option value="disponible" {{ old('estado', $maquinaria->estado) == 'disponible' ? 'selected' : '' }}>Disponible</option>
                         <option value="en_uso" {{ old('estado', $maquinaria->estado) == 'en_uso' ? 'selected' : '' }}>En uso (Asignada)</option>
-                        <option value="mantenimiento" {{ old('estado', $maquinaria->estado) == 'mantenimiento' ? 'selected' : '' }}>En mantenimiento</option>
-                        <option value="inactiva" {{ old('estado', $maquinaria->estado) == 'inactiva' ? 'selected' : '' }}>Inactiva / Dañada</option>
+                        <option value="en_mantenimiento" {{ old('estado', $maquinaria->estado) == 'en_mantenimiento' ? 'selected' : '' }}>En mantenimiento</option>
+                        <option value="fuera_servicio" {{ old('estado', $maquinaria->estado) == 'fuera_servicio' ? 'selected' : '' }}>Fuera de servicio</option>
                     </select>
                 </div>
             </div>

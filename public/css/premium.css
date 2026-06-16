@@ -110,7 +110,7 @@ body {
   color: white; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
 }
 
-.sidebar-user .user-name  { color: var(--card-border); font-size: 0.82rem; font-weight: 600; }
+.sidebar-user .user-name  { color: var(--text-primary); font-size: 0.82rem; font-weight: 600; }
 .sidebar-user .user-role  { color: var(--sidebar-label); font-size: 0.72rem; text-transform: capitalize; }
 
 /* Accordion sections */
@@ -908,3 +908,144 @@ select option {
   line-height: 1.2;
 }
 
+/* ============================================================
+   COLLAPSE DETAILS / EXPANDABLE ROWS
+   ============================================================ */
+
+tr.collapse,
+tr.collapse.show,
+tr[id^="detalle-"] {
+    background: var(--topbar-bg) !important;
+}
+
+tr.collapse td,
+tr.collapse.show td,
+tr[id^="detalle-"] td {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--card-border) !important;
+}
+
+tr[id^="detalle-"] .p-3 {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+tr[id^="detalle-"] table {
+    background: transparent !important;
+}
+
+tr[id^="detalle-"] table th {
+    background: #1A2235 !important;
+    color: var(--text-secondary) !important;
+}
+
+tr[id^="detalle-"] table td {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+/* Accordion */
+.accordion-item {
+    background: var(--topbar-bg) !important;
+    border-color: var(--card-border) !important;
+}
+
+.accordion-button {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: rgba(99,102,241,.15) !important;
+    color: #a5b4fc !important;
+}
+
+.accordion-body {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Offcanvas */
+.offcanvas {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Tooltip */
+.tooltip-inner {
+    background: #111827 !important;
+}
+
+/* Popover */
+.popover {
+    background: var(--topbar-bg) !important;
+    border-color: var(--card-border) !important;
+}
+
+.popover-body {
+    color: var(--text-primary) !important;
+}
+
+/* List Group */
+.list-group-item {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--card-border) !important;
+}
+
+/* Toast */
+.toast {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--card-border) !important;
+}
+
+/* Breadcrumb */
+.breadcrumb-item,
+.breadcrumb-item a {
+    color: var(--text-secondary) !important;
+}
+
+/* Canvas charts containers */
+canvas {
+    background: transparent !important;
+}
+/* Cards Bootstrap */
+.card {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Card body */
+.card-body {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Card header */
+.card-header {
+    background: #1A2235 !important;
+    color: var(--text-primary) !important;
+}
+
+/* Bootstrap backgrounds */
+.bg-white,
+.bg-light {
+    background: var(--topbar-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Rounded panels */
+.border,
+.border-top,
+.border-bottom,
+.border-start,
+.border-end {
+    border-color: var(--card-border) !important;
+}
+
+/* Containers comunes */
+.container,
+.container-fluid {
+    color: var(--text-primary);
+}

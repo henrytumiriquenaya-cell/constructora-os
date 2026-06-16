@@ -11,9 +11,7 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        $materiales = Material::with('proyecto')
-            ->orderBy('nombre')
-            ->paginate(15);
+        $materiales = Material::orderBy('nombre')->paginate(15);
 
         return view('operativa.materiales.index', compact('materiales'));
     }
@@ -28,9 +26,12 @@ class MaterialController extends Controller
     {
         $data = $request->validate([
             'nombre'      => 'required|string|max:150',
-            'cantidad'    => 'required|numeric|min:0',
+            'codigo_interno'=> 'required|string|max:150',
+            'categoria'      => 'required|string|max:150',
+            'unidad_medida'      => 'required|in:kg,ton,m,m2,m3,lt,pieza',
+            'precio_unitario_ref'  => 'nullable|numeric|min:0',
             'descripcion' => 'nullable|string|max:500',
-            'id_proyecto' => 'nullable|integer|exists:proyecto,id_proyecto',
+            'stock_minimo'  => 'nullable|numeric|min:0',
         ]);
 
         Material::create($data);
@@ -52,9 +53,11 @@ class MaterialController extends Controller
 
         $data = $request->validate([
             'nombre'      => 'required|string|max:150',
-            'cantidad'    => 'required|numeric|min:0',
+            'categoria'      => 'required|string|max:150',
+            'unidad_medida'      => 'required|in:kg,ton,m,m2,m3,lt,pieza',
+            'precio_unitario_ref'  => 'nullable|numeric|min:0',
             'descripcion' => 'nullable|string|max:500',
-            'id_proyecto' => 'nullable|integer|exists:proyecto,id_proyecto',
+            'stock_minimo'  => 'nullable|numeric|min:0',
         ]);
 
         $material->update($data);
@@ -62,7 +65,6 @@ class MaterialController extends Controller
         return redirect()->route('operativa.materiales.index')
             ->with('success', 'Material actualizado correctamente.');
     }
-
     public function destroy($id)
     {
         $material = Material::findOrFail($id);

@@ -98,17 +98,21 @@
                 </td>
                 <td>
                     @php
-                        $estado = $m->estado_actual ?? 'desconocido';
+                        $estado_raw = $m->estado_actual ?? 'desconocido';
+                        $estado = strtolower(trim($estado_raw)); // normaliza para comparar
                         $color = match($estado) {
                             'disponible'    => 'success',
-                            'en uso'        => 'warning',
-                            'mantenimiento' => 'danger',
+                            'en_uso'        => 'warning',
+                            'en_mantenimiento' => 'danger',
+                            'fuera_servicio' => 'danger',
                             default         => 'secondary',
                         };
+                        // Formato legible para mostrar: reemplaza _ y - por espacios, luego capitaliza palabras.
+                        $estado_display = ucwords(str_replace(['_','-'], ' ', $estado));
                     @endphp
                     <span class="badge bg-{{ $color }}">
-                        {{ ucfirst($estado) }}
-                    </span>
+                        {{ $estado_display }}
+                     </span>
                 </td>
                 <td class="text-center">
                     <a href="{{ route('operativa.maquinarias.catalogo_edit', $m->id_maquinaria) }}"
