@@ -143,13 +143,17 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/materiales/{id}', [MaterialController::class, 'destroy'])->middleware('permission:material')->name('operativa.materiales.destroy');
 
         // ── Movimientos de Inventario CRUD ───────────────────────────────────
-        Route::get('/movimientos', [MovimientoInventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.movimientos.index');
-        Route::get('/movimientos/create', [MovimientoInventarioController::class, 'create'])->middleware('permission:inventario')->name('operativa.movimientos.create');
-        Route::post('/movimientos', [MovimientoInventarioController::class, 'store'])->middleware('permission:inventario')->name('operativa.movimientos.store');
-        Route::get('/movimientos/{id}/edit', [MovimientoInventarioController::class, 'edit'])->middleware('permission:inventario')->name('operativa.movimientos.edit');
-        Route::put('/movimientos/{id}', [MovimientoInventarioController::class, 'update'])->middleware('permission:inventario')->name('operativa.movimientos.update');
-        Route::delete('/movimientos/{id}', [MovimientoInventarioController::class, 'destroy'])->middleware('permission:inventario')->name('operativa.movimientos.destroy');
-    });
+        Route::post('/inventario/recalcular', [InventarioController::class, 'recalcular'])
+            ->name('operativa.inventario.recalcular');
+        
+        // Las rutas existentes de movimientos (ya deberías tenerlas, solo verificar):
+        Route::get('/movimientos',                [MovimientoInventarioController::class, 'index'])  ->name('operativa.movimientos.index');
+        Route::get('/movimientos/create',         [MovimientoInventarioController::class, 'create']) ->name('operativa.movimientos.create');
+        Route::post('/movimientos',               [MovimientoInventarioController::class, 'store'])  ->name('operativa.movimientos.store');
+        Route::get('/movimientos/{id}/edit',      [MovimientoInventarioController::class, 'edit'])   ->name('operativa.movimientos.edit');
+        Route::put('/movimientos/{id}',           [MovimientoInventarioController::class, 'update']) ->name('operativa.movimientos.update');
+        Route::delete('/movimientos/{id}',        [MovimientoInventarioController::class, 'destroy'])->name('operativa.movimientos.destroy');
+            });
 
     Route::prefix('recursos-humanos')->group(function () {
         Route::get('/empleados', [EmpleadoController::class, 'index'])->middleware('permission:empleado')->name('rrhh.empleados.index');
