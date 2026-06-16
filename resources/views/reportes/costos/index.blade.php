@@ -34,31 +34,29 @@
                 </thead>
                 <tbody>
                     @foreach($datos as $item)
-                    <tr>
-                        <td class="text-center text-muted small">{{ $loop->iteration }}</td>
-                        <td class="fw-semibold">{{ $item->id_proyecto ?? 'N/A' }}</td>
-                        <td class="text-end">Bs {{ number_format($item->mano_obra ?? 0, 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($item->costo_materiales ?? 0, 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($item->costo_maquinaria ?? 0, 2) }}</td>
-                        <td class="text-end fw-bold text-primary">Bs {{ number_format($item->costo_total_real ?? 0, 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($item->monto_planificado ?? 0, 2) }}</td>
-                        <td class="text-end {{ ($item->margen_restante ?? 0) < 0 ? 'text-danger' : 'text-success' }}">
-                            Bs {{ number_format($item->margen_restante ?? 0, 2) }}
-                        </td>
-                        <td class="text-center small text-muted">
-                            {{ isset($item->ultima_actualizacion) && $item->ultima_actualizacion ? \Carbon\Carbon::parse($item->ultima_actualizacion)->format('d/m/y H:i') : '—' }}
-                        </td>
-                    </tr>
-                    @endforeach
+                        <tr>
+                            <td class="text-center text-muted small">{{ $loop->iteration }}</td>
+                            <td class="fw-semibold">{{ $item->nombre_proyecto ?? 'N/A' }}</td>
+                            <td class="text-end">Bs {{ number_format($item->costo_real_mano_obra ?? 0, 2) }}</td>
+                            <td class="text-end">Bs {{ number_format($item->costo_real_materiales ?? 0, 2) }}</td>
+                            <td class="text-end">Bs {{ number_format($item->costo_real_maquinaria ?? 0, 2) }}</td>
+                            <td class="text-end fw-bold text-primary">Bs {{ number_format($item->costo_total_real ?? 0, 2) }}</td>
+                            <td class="text-end">Bs {{ number_format($item->monto_total_planificado ?? 0, 2) }}</td>
+                            <td class="text-end {{ ($item->margen_restante ?? 0) < 0 ? 'text-danger' : 'text-success' }}">
+                                Bs {{ number_format($item->margen_restante ?? 0, 2) }}
+                            </td>
+                            <td class="text-center small text-muted">—</td>
+                        </tr>
+                        @endforeach
                 </tbody>
                 <tfoot class="table-light">
                     <tr class="fw-bold">
                         <td colspan="2" class="text-end">TOTALES:</td>
-                        <td class="text-end">Bs {{ number_format($datos->sum('mano_obra'), 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($datos->sum('costo_materiales'), 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($datos->sum('costo_maquinaria'), 2) }}</td>
+                        <td class="text-end">Bs {{ number_format($datos->sum('costo_real_mano_obra'), 2) }}</td>
+                        <td class="text-end">Bs {{ number_format($datos->sum('costo_real_materiales'), 2) }}</td>
+                        <td class="text-end">Bs {{ number_format($datos->sum('costo_real_maquinaria'), 2) }}</td>
                         <td class="text-end text-primary">Bs {{ number_format($datos->sum('costo_total_real'), 2) }}</td>
-                        <td class="text-end">Bs {{ number_format($datos->sum('monto_planificado'), 2) }}</td>
+                        <td class="text-end">Bs {{ number_format($datos->sum('monto_total_planificado'), 2) }}</td>
                         <td class="text-end">Bs {{ number_format($datos->sum('margen_restante'), 2) }}</td>
                         <td></td>
                     </tr>

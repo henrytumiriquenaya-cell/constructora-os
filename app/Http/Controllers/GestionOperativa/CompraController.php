@@ -106,13 +106,23 @@ class CompraController extends Controller
     }
 
     public function destroyDetalle($id, $detalleId)
-    {
-        $detalle = DetalleCompra::where('id_compra', $id)->findOrFail($detalleId);
-        $detalle->delete();
+{
+    $detalle = DetalleCompra::where('id_compra', $id)->findOrFail($detalleId);
 
-        return redirect()->route('operativa.compras.detalle', $id)
-            ->with('success', 'Ítem eliminado del detalle de compra.');
+    try {
+        $detalle->delete();
+    } catch (\Illuminate\Database\QueryException $e) {
+        // Código 23000 = violación de constraint
+        if ($e->getCode() === '23000') {
+            return redirect()->route('operativa.compras.detalle', $id)
+                ->with('error', 'No se puede eliminar: el inventario quedaría en negativo. Ajusta el stock primero.');
+        }
+        throw $e; 
     }
+
+    return redirect()->route('operativa.compras.detalle', $id)
+        ->with('success', 'Ítem eliminado del detalle de compra.');
+}
 
     public function recibirTodo($id)
     {
