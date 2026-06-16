@@ -15,7 +15,15 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($materiales as $m)
+            @forelse($materiales as $m)
+                @php
+                    $stockBadge = match(true) {
+                        is_null($m->stock_minimo)        => ['secondary', 'Sin límite'],
+                        ($m->stock_actual ?? 0) <= 0     => ['danger',    'Sin stock'],
+                        ($m->stock_actual ?? 0) < $m->stock_minimo => ['warning', 'Stock bajo'],
+                        default                          => ['success',   'OK'],
+                    };
+                @endphp
                 <tr>
                     <td class="text-muted small">{{ $m->id_material }}</td>
                     <td><span class="badge bg-light text-dark fw-mono">{{ $m->codigo_interno }}</span></td>
@@ -38,15 +46,15 @@
                         </form>
                     </td>
                 </tr>
-                @empty
+            @empty
                 <tr>
                     <td colspan="9" class="text-center py-4">No hay materiales registrados.</td>
                 </tr>
-                @endforelse
+            @endforelse
             </tbody>
         </table>
-    </div>
-    <div class="d-flex justify-content-center py-3">
-        {{ $materiales->links() }}
+        <div class="d-flex justify-content-center mt-3">
+            {{ $materiales->links() }}
+        </div>
     </div>
 </div>

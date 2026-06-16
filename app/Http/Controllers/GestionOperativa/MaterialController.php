@@ -76,7 +76,6 @@ class MaterialController extends Controller
 
         return redirect()->route('operativa.materiales.index')->with('success', 'Material actualizado exitosamente.');
     }
-
     public function destroy($id)
     {
         DB::table('material')->where('id_material', $id)->delete();

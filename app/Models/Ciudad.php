@@ -11,7 +11,7 @@ class Ciudad extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre',
+        'nombre_ciudad',
         'departamento',
         'pais',
     ];

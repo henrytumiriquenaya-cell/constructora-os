@@ -12,7 +12,7 @@
         @csrf @method('PUT')
         <div class="mb-3">
             <label class="form-label">Nombre *</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $ciudad->nombre) }}" required>
+            <input type="text" name="nombre_ciudad" class="form-control" value="{{ old('nombre_ciudad', $ciudad->nombre_ciudad) }}" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Departamento *</label>

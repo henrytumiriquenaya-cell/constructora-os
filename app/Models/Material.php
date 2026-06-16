@@ -17,13 +17,11 @@ class Material extends Model
     protected $fillable = [
         'nombre',
         'codigo_interno',
+        'categoria',
         'unidad_medida',
         'precio_unitario_ref',
         'stock_minimo',
         'descripcion',
-        'activo',
-        'cantidad',
-        'id_proyecto',
     ];
 
     public function detallesCompra(): HasMany
@@ -31,14 +29,14 @@ class Material extends Model
         return $this->hasMany(DetalleCompra::class, 'id_material', 'id_material');
     }
 
-    public function proyecto(): BelongsTo
+    /* public function proyecto(): BelongsTo
     {
         return $this->belongsTo(Proyecto::class, 'id_proyecto', 'id_proyecto');
     }
-
-    public function movimientos(): HasMany
+    */
+    /*public function movimientos(): HasMany
     {
         return $this->hasMany(MovimientoInventario::class, 'id_material', 'id_material');
-    }
+    }*/
 }
 

@@ -23,7 +23,7 @@
             @forelse($ciudades as $c)
                 <tr>
                     <td>{{ $c->id_ciudad }}</td>
-                    <td class="fw-bold">{{ $c->nombre }}</td>
+                    <td class="fw-bold">{{ $c->nombre_ciudad }}</td>
                     <td>{{ $c->departamento }}</td>
                     <td>{{ $c->pais }}</td>
                     <td class="text-nowrap">

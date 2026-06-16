@@ -22,7 +22,7 @@ class MaquinariaController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'codigo'           => 'required|string|max:20',
+            'codigo_inventario'           => 'required|string|max:20',
             'nombre'           => 'required|string|max:100',
             'tipo'             => 'required|string|max:80',
             'marca'            => 'nullable|string|max:80',
@@ -31,7 +31,7 @@ class MaquinariaController extends Controller
             'numero_serie'     => 'nullable|string|max:60',
             'capacidad'        => 'nullable|numeric',
             'unidad_capacidad' => 'nullable|string|max:20',
-            'estado'           => 'required|in:disponible,en_uso,mantenimiento,baja',
+            'estado_actual'    => 'required|in:disponible,en_uso,en_mantenimiento,fuera_servicio',
             'costo_hora'       => 'nullable|numeric|min:0',
             'observaciones'    => 'nullable|string',
         ]);
@@ -52,10 +52,9 @@ class MaquinariaController extends Controller
         $maquinaria = Maquinaria::findOrFail($id);
         $data = $request->validate([
             'nombre'        => 'required|string|max:100',
-            'tipo'          => 'required|string|max:80',
             'marca'         => 'nullable|string|max:80',
             'modelo'        => 'nullable|string|max:80',
-            'estado'        => 'required|in:disponible,en_uso,mantenimiento,baja',
+            'estado_actual' => 'required|in:disponible,en_uso,en_mantenimiento,fuera_servicio',
             'costo_hora'    => 'nullable|numeric|min:0',
             'observaciones' => 'nullable|string',
         ]);
