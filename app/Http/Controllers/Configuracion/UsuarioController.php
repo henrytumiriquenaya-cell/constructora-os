@@ -60,7 +60,7 @@ class UsuarioController extends Controller
         $usuario->nombre_usuario = $validated['usuario'];
         $usuario->nombre_completo = $validated['nombre_completo'];
         $usuario->correo = $validated['correo'] ?? null;
-        $usuario->contrasena = Hash::make($validated['password']);
+        $usuario->contrasena = Hash::make($validated['password']); // Para retrocompatibilidad
         $usuario->rol = $validated['rol'];
         $usuario->activo = 1;
         $usuario->save();

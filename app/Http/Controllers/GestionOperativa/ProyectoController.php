@@ -11,7 +11,27 @@ class ProyectoController extends Controller
 {
     public function index()
     {
-        $proyectos = Proyecto::with('contrato')->orderByDesc('id_proyecto')->paginate(15);
+        $usuario = auth()->user();
+
+        if ($usuario->rol === 'cliente') {
+
+            $proyectos = Proyecto::whereHas('contrato', function ($query) use ($usuario) {
+
+                $query->where('id_cliente', $usuario->id_cliente);
+
+            })
+            ->with('contrato')
+            ->orderByDesc('id_proyecto')
+            ->paginate(15);
+
+        } else {
+
+            $proyectos = Proyecto::with('contrato')
+                ->orderByDesc('id_proyecto')
+                ->paginate(15);
+        }
+
+
         return view('operativa.proyectos.index', compact('proyectos'));
     }
 

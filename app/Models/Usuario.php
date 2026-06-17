@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Cliente;
+use App\Models\Empleado;
 
 class Usuario extends Authenticatable
 {
@@ -14,6 +16,8 @@ class Usuario extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
+        'id_cliente',
+        'id_empleado',
         'nombre_usuario',
         'usuario',
         'correo',
@@ -28,7 +32,21 @@ class Usuario extends Authenticatable
         'password',
         'remember_token',
     ];
+   
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
+    }
 
+
+    public function empleado()
+    {
+        return $this->belongsTo(
+            Empleado::class,
+            'id_empleado',
+            'id_empleado'
+        );
+}
     public function getAuthIdentifierName(): string
     {
         return 'id_usuario';

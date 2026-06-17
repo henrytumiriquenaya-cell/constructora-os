@@ -7,6 +7,7 @@ use App\Models\CuotasPago;
 use App\Models\Contrato;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CuotasPagoController extends Controller
 {

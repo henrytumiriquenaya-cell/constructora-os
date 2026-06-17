@@ -88,7 +88,11 @@ class PermissionService
                 break;
 
             case 'cliente':
-                $perms = in_array($table, config('permissions.cliente_tables', []), true) ? ['S'] : [];
+
+                $perms = in_array($table, config('permissions.cliente_tables', []), true)
+                    ? ['S']
+                    : [];
+
                 break;
 
             case 'lector':
