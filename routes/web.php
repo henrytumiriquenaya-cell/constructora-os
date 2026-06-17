@@ -18,6 +18,7 @@ use App\Http\Controllers\GestionOperativa\MovimientoInventarioController;
 use App\Http\Controllers\GestionOperativa\ProveedorController;
 use App\Http\Controllers\RRHH\EmpleadoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RRHH\FeriadoController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -180,8 +181,18 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/permisos/{id}', [\App\Http\Controllers\RRHH\PermisoController::class, 'update'])->middleware('permission:permiso')->name('rrhh.permisos.update');
         Route::delete('/permisos/{id}', [\App\Http\Controllers\RRHH\PermisoController::class, 'destroy'])->middleware('permission:permiso')->name('rrhh.permisos.destroy');
 
-        Route::get('/feriados', [EmpleadoController::class, 'feriados'])
+        Route::get('/feriados', [FeriadoController::class, 'index'])
             ->middleware('permission:feriado')->name('rrhh.feriados.index');
+        Route::get('/feriados/create', [FeriadoController::class, 'create'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.create');
+        Route::post('/feriados', [FeriadoController::class, 'store'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.store');
+        Route::get('/feriados/{id}/edit', [FeriadoController::class, 'edit'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.edit');
+        Route::put('/feriados/{id}', [FeriadoController::class, 'update'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.update');
+        Route::delete('/feriados/{id}', [FeriadoController::class, 'destroy'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.destroy');
     });
 
     Route::prefix('reportes')->group(function () {

@@ -34,39 +34,34 @@ class AppServiceProvider extends ServiceProvider
     {
         // 🧠 Lista de tablas de sistema que JAMÁS deben ser observadas para evitar bucles o duplicados
         $tablasExcluidas = [
-            'usuario',
             'log_cambios',
             'notificaciones',
             'failed_jobs',
             'migrations',
-            'sessions'
+            'sessions',
         ];
 
         $path = app_path('Models');
         foreach (File::files($path) as $file) {
             $class = 'App\\Models\\'.pathinfo($file->getFilename(), PATHINFO_FILENAME);
-            
+
             if (! class_exists($class)) {
                 continue;
             }
 
             if (is_subclass_of($class, Model::class)) {
-                // Instanciamos el modelo temporalmente para leer su tabla real asignada
                 $instance = new $class;
                 $tableName = $instance->getTable();
 
-                // Limpiamos posibles prefijos de esquemas (ej: 'schema.tabla' -> 'tabla')
                 if (str_contains($tableName, '.')) {
                     $parts = explode('.', $tableName);
                     $tableName = end($parts);
                 }
 
-                // Si la tabla está en la lista negra, saltamos el modelo por completo
                 if (in_array(strtolower($tableName), $tablasExcluidas, true)) {
                     continue;
                 }
 
-                // Si pasa todos los filtros, le asignamos el observador de auditoría
                 $class::observe(\App\Observers\AuditObserver::class);
             }
         }
