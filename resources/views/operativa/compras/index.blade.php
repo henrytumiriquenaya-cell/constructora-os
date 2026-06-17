@@ -2,7 +2,7 @@
 
 @section('title', 'Compras')
 @section('page_title', 'Compras')
-@section('page_subtitle', 'Gestión Operativa · Registro de compras')
+@section('page_subtitle', 'Gestión Operativa · Registro de compras (Almacén Central)')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -11,13 +11,13 @@
     </div>
     <div class="alert alert-dark border small py-2 mb-3">
         <i class="fas fa-database me-1"></i>
-        El campo <strong>monto_total</strong> es de solo lectura y se calcula automáticamente en SQL Server por trigger.
+        El campo <strong>monto_total</strong> es de solo lectura y se calcula automáticamente por trigger. Toda compra ingresa al <strong>almacén central</strong>; el proyecto destino se asigna luego, al registrar el uso del material.
     </div>
     <hr>
     <div class="table-wrapper"><div class="table-responsive">
         <table class="table table-bordered table-hover table-sm align-middle table-interactive">
             <thead class="table-head-premium">
-                <tr><th>ID</th><th>Nro. Orden</th><th>Proveedor</th><th>Proyecto</th><th>Monto</th><th>Estado</th><th>Emisión</th><th>Entrega Prev.</th><th>Acciones</th></tr>
+                <tr><th>ID</th><th>Nro. Orden</th><th>Proveedor</th><th>Monto</th><th>Estado</th><th>Emisión</th><th>Entrega Prev.</th><th>Acciones</th></tr>
             </thead>
             <tbody>
             @forelse($compras as $c)
@@ -25,7 +25,6 @@
                     <td>{{ $c->id_compra }}</td>
                     <td><code>{{ $c->numero_orden }}</code></td>
                     <td>{{ $c->proveedor->razon_social ?? '—' }}</td>
-                    <td>{{ $c->proyecto->nombre_proyecto ?? '—' }}</td>
                     <td class="text-end fw-bold">{{ number_format($c->monto_total,2) }}</td>
                     <td>
                         @php $col=['borrador'=>'secondary','emitida'=>'primary','recibida_parcial'=>'warning','recibida_total'=>'success','anulada'=>'danger'][$c->estado] ?? 'secondary' @endphp
@@ -44,7 +43,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="9" class="text-center text-muted">Sin órdenes de compra.</td></tr>
+                <tr><td colspan="8" class="text-center text-muted">Sin órdenes de compra.</td></tr>
             @endforelse
             </tbody>
         </table>
