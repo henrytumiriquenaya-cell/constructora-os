@@ -106,6 +106,9 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cuotas/{id}', [CuotasPagoController::class, 'update'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.update');
         Route::delete('/cuotas/{id}', [CuotasPagoController::class, 'destroy'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.destroy');
 
+        Route::get('/cuotas/{id}/registrar-pago', [CuotasPagoController::class, 'registrarPagoForm'])
+            ->middleware('permission:cuotas_pago')->name('operativa.cuotas.registrar_pago_form');
+
         Route::get('/inventario', [InventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.inventario.index');
         Route::post('/inventario/uso', [InventarioController::class, 'registrarUso'])->middleware('permission:uso_material')->name('operativa.inventario.uso.store');
 
