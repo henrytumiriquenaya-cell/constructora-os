@@ -12,7 +12,6 @@ class Compra extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_proyecto',
         'id_proveedor',
         'numero_orden',
         'fecha_emision',
@@ -22,11 +21,6 @@ class Compra extends Model
         'estado',
         'observaciones',
     ];
-
-    public function proyecto()
-    {
-        return $this->belongsTo(Proyecto::class, 'id_proyecto');
-    }
 
     public function proveedor()
     {

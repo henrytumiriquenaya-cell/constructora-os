@@ -25,14 +25,13 @@ class UsuarioController extends Controller
                   ->orWhere('activo', 'inactivo');
             });
         } else {
-            // Activos
             $query->where(function($q) {
                 $q->where('activo', 1)
                   ->orWhere('activo', '1')
                   ->orWhere('activo', true)
                   ->orWhere('activo', 'true')
                   ->orWhere('activo', 'activo')
-                  ->orWhereNull('activo'); // Asumimos activos por defecto
+                  ->orWhereNull('activo');
             });
         }
 
@@ -49,25 +48,25 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'usuario' => 'required|string|max:100|unique:usuario,usuario',
-            'nombre_completo' => 'required|string|max:200',
-            'correo' => 'required|email|max:120|unique:usuario,correo',
-            'password' => 'required|string|min:6|confirmed',
-            'rol' => 'required|string|max:50',
+            'usuario'         => 'required|string|max:80|unique:usuario,usuario',
+            'nombre_completo' => 'required|string|max:120',
+            'correo'          => 'nullable|email|max:120|unique:usuario,correo',
+            'password'        => 'required|string|min:6|confirmed',
+            'rol'             => 'required|string|max:40',
         ]);
 
         $usuario = new Usuario();
         $usuario->usuario = $validated['usuario'];
-        // Mantener compatibilidad con nombre_usuario si es necesario
-        $usuario->nombre_usuario = $validated['usuario']; 
+        $usuario->nombre_usuario = $validated['usuario'];
         $usuario->nombre_completo = $validated['nombre_completo'];
-        $usuario->correo = $validated['correo'];
+        $usuario->correo = $validated['correo'] ?? null;
         $usuario->contrasena = Hash::make($validated['password']); // Para retrocompatibilidad
         $usuario->rol = $validated['rol'];
         $usuario->activo = 1;
         $usuario->save();
 
-        return redirect()->route('configuracion.usuarios.index')->with('success', 'Usuario creado correctamente.');
+        return redirect()->route('configuracion.usuarios.index')
+                         ->with('success', 'Usuario creado correctamente.');
     }
 
     public function edit($id)
@@ -81,10 +80,10 @@ class UsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
 
         $rules = [
-            'usuario' => ['required', 'string', 'max:100', Rule::unique('usuario')->ignore($usuario->id_usuario, 'id_usuario')],
-            'nombre_completo' => 'required|string|max:200',
-            'correo' => ['required', 'email', 'max:120', Rule::unique('usuario')->ignore($usuario->id_usuario, 'id_usuario')],
-            'rol' => 'required|string|max:50',
+            'usuario'         => ['required', 'string', 'max:80', Rule::unique('usuario')->ignore($usuario->id_usuario, 'id_usuario')],
+            'nombre_completo' => 'required|string|max:120',
+            'correo'          => ['nullable', 'email', 'max:120', Rule::unique('usuario')->ignore($usuario->id_usuario, 'id_usuario')],
+            'rol'             => 'required|string|max:40',
         ];
 
         if ($request->filled('password')) {
@@ -96,41 +95,42 @@ class UsuarioController extends Controller
         $usuario->usuario = $validated['usuario'];
         $usuario->nombre_usuario = $validated['usuario'];
         $usuario->nombre_completo = $validated['nombre_completo'];
-        $usuario->correo = $validated['correo'];
+        $usuario->correo = $validated['correo'] ?? null;
         $usuario->rol = $validated['rol'];
 
         if ($request->filled('password')) {
-            $usuario->password = Hash::make($validated['password']);
             $usuario->contrasena = Hash::make($validated['password']);
         }
 
         $usuario->save();
 
-        return redirect()->route('configuracion.usuarios.index')->with('success', 'Usuario actualizado correctamente.');
+        return redirect()->route('configuracion.usuarios.index')
+                         ->with('success', 'Usuario actualizado correctamente.');
     }
 
     public function destroy($id)
     {
         $usuario = Usuario::findOrFail($id);
-        
-        // Evitar que el administrador actual se desactive a sí mismo
+
         if (auth()->id() == $usuario->id_usuario) {
-            return redirect()->route('configuracion.usuarios.index')->with('error', 'No puedes desactivar tu propio usuario.');
+            return redirect()->route('configuracion.usuarios.index')
+                             ->with('error', 'No puedes desactivar tu propio usuario.');
         }
 
-        // Baja lógica
         $usuario->activo = 0;
         $usuario->save();
 
-        return redirect()->route('configuracion.usuarios.index')->with('success', 'Usuario desactivado correctamente.');
+        return redirect()->route('configuracion.usuarios.index')
+                         ->with('success', 'Usuario desactivado correctamente.');
     }
-    
+
     public function restaurar($id)
     {
         $usuario = Usuario::findOrFail($id);
         $usuario->activo = 1;
         $usuario->save();
 
-        return redirect()->route('configuracion.usuarios.index', ['estado' => 'inactivos'])->with('success', 'Usuario reactivado correctamente.');
+        return redirect()->route('configuracion.usuarios.index', ['estado' => 'inactivos'])
+                         ->with('success', 'Usuario reactivado correctamente.');
     }
 }
