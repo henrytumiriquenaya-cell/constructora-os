@@ -35,6 +35,11 @@
                     <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $material->nombre) }}" required>
              </div>
 
+             <div class="col-md-6">
+                    <label class="form-label">Código Interno</label>
+                    <input type="text" name="codigo_interno" class="form-control" value="{{ old('codigo_interno', $material->codigo_interno) }}">
+             </div>
+
             
             <div class="col-md-6">
                     <label class="form-label">Categoria <span class="text-danger">*</span></label>
