@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\CuotasPago;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CuotasPagoController extends Controller
 {
     public function index()
     {
-        $cuotas = DB::table('cuotas_pago as cp')
+        $usuario = Auth::user();
+
+
+        $query = DB::table('cuotas_pago as cp')
             ->join('contrato as con', 'cp.id_contrato', '=', 'con.id_contrato')
             ->join('cliente as cl', 'con.id_cliente', '=', 'cl.id_cliente')
             ->select(
@@ -27,10 +31,26 @@ class CuotasPagoController extends Controller
                 'cp.estado_cuota',
                 DB::raw('DATEDIFF(CURDATE(), cp.fecha_vencimiento) as dias_retraso'),
                 'cp.estado_cuota as evaluacion_dinamica'
-            )
+            );
+
+
+
+        if ($usuario->rol === 'cliente') {
+
+            $query->where(
+                'con.id_cliente',
+                $usuario->id_cliente
+            );
+
+        }
+
+
+
+        $cuotas = $query
             ->orderBy('cp.fecha_vencimiento')
             ->paginate(15)
             ->through(fn ($row) => (array) $row);
+
 
         return view('operativa.cuotas.index', compact('cuotas'));
     }

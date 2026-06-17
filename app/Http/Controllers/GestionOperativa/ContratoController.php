@@ -7,15 +7,35 @@ use App\Http\Controllers\Controller;
 use App\Models\Contrato;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContratoController extends Controller
 {
     public function index()
     {
-        $contratos = Contrato::with('cliente')
-                             ->orderByDesc('id_contrato')
-                             ->paginate(15);
-        return view('operativa.contratos.index', compact('contratos'));
+        $usuario = Auth::user();
+
+        $query = Contrato::with('cliente')
+            ->orderByDesc('id_contrato');
+
+
+        if ($usuario->rol === 'cliente') {
+
+            $query->where(
+                'id_cliente',
+                $usuario->id_cliente
+            );
+
+        }
+
+
+        $contratos = $query->paginate(15);
+
+
+        return view(
+            'operativa.contratos.index',
+            compact('contratos')
+        );
     }
 
     public function create()
