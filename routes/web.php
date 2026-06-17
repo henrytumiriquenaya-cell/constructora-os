@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
             ->middleware('permission:cuotas_pago')->name('operativa.cuotas.registrar_pago_form');
 
         Route::get('/inventario', [InventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.inventario.index');
+        Route::get('/inventario/uso', [InventarioController::class, 'create'])->middleware('permission:uso_material')->name('operativa.inventario.uso.create');
         Route::post('/inventario/uso', [InventarioController::class, 'registrarUso'])->middleware('permission:uso_material')->name('operativa.inventario.uso.store');
 
         Route::get('/catalogo-maquinaria', [MaquinariaController::class, 'index'])->middleware('permission:maquinaria')->name('operativa.maquinarias.catalogo');

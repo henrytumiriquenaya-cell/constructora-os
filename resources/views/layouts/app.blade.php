@@ -102,7 +102,10 @@
                         <a href="{{ route('operativa.compras.index') }}" class="nav-link {{ request()->routeIs('operativa.compras.*') ? 'active-link' : '' }}"><i class="ti ti-shopping-cart"></i> Compras</a>
                     @endif
                     @if(Auth::user()->hasRole(['admin','gerente','jefe obra','logist']) && \Illuminate\Support\Facades\Route::has('operativa.inventario.index'))
-                        <a href="{{ route('operativa.inventario.index') }}" class="nav-link {{ request()->routeIs('operativa.inventario.*') ? 'active-link' : '' }}"><i class="ti ti-packages"></i> Inventario</a>
+                        <a href="{{ route('operativa.inventario.index') }}" class="nav-link {{ request()->routeIs('operativa.inventario.index') ? 'active-link' : '' }}"><i class="ti ti-packages"></i> Inventario</a>
+                    @endif
+                    @if(Auth::user()->hasRole(['admin','gerente','jefe obra','logist']) && \Illuminate\Support\Facades\Route::has('operativa.inventario.uso.create'))
+                        <a href="{{ route('operativa.inventario.uso.create') }}" class="nav-link {{ request()->routeIs('operativa.inventario.uso.*') ? 'active-link' : '' }}"><i class="ti ti-package-export"></i> Uso de material</a>
                     @endif
                     @if(Auth::user()->hasRole(['admin','gerente','jefe obra','logist']) && \Illuminate\Support\Facades\Route::has('operativa.movimientos.index'))
                         <a href="{{ route('operativa.movimientos.index') }}" class="nav-link {{ request()->routeIs('operativa.movimientos.*') ? 'active-link' : '' }}"><i class="ti ti-arrows-right-left"></i> Movimientos</a>
