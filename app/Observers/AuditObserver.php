@@ -18,6 +18,17 @@ class AuditObserver
         'compra',
         'maquinaria',
         'materiales',
+        'usuario',
+    ];
+
+    /**
+     * Campos que nunca deben quedar en texto plano (ni siquiera como hash)
+     * dentro de log_cambios, sin importar la tabla.
+     */
+    private array $camposSensibles = [
+        'contrasena',
+        'password',
+        'remember_token',
     ];
 
     private function debeAuditar(Model $model): bool
@@ -46,6 +57,20 @@ class AuditObserver
             ?? 'sistema';
     }
 
+    /**
+     * Quita o enmascara los campos sensibles antes de serializar a JSON.
+     */
+    private function sanear(array $attributes): array
+    {
+        foreach ($this->camposSensibles as $campo) {
+            if (array_key_exists($campo, $attributes)) {
+                $attributes[$campo] = '***OCULTO***';
+            }
+        }
+
+        return $attributes;
+    }
+
     public function creating(Model $model): void
     {
         if ($this->debeAuditar($model)) {
@@ -72,7 +97,7 @@ class AuditObserver
             'ip_address'       => Request::ip(),
             'datos_anteriores' => null,
             'datos_nuevos'     => json_encode(
-                $model->getAttributes(),
+                $this->sanear($model->getAttributes()),
                 JSON_UNESCAPED_UNICODE
             ),
         ]);
@@ -105,11 +130,11 @@ class AuditObserver
             'id_usuario'       => Auth::id(),
             'ip_address'       => Request::ip(),
             'datos_anteriores' => json_encode(
-                $model->getOriginal(),
+                $this->sanear($model->getOriginal()),
                 JSON_UNESCAPED_UNICODE
             ),
             'datos_nuevos'     => json_encode(
-                $model->getAttributes(),
+                $this->sanear($model->getAttributes()),
                 JSON_UNESCAPED_UNICODE
             ),
         ]);
@@ -142,7 +167,7 @@ class AuditObserver
             'id_usuario'       => Auth::id(),
             'ip_address'       => Request::ip(),
             'datos_anteriores' => json_encode(
-                $model->getAttributes(),
+                $this->sanear($model->getAttributes()),
                 JSON_UNESCAPED_UNICODE
             ),
             'datos_nuevos'     => null,
