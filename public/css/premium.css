@@ -1049,3 +1049,25 @@ canvas {
 .container-fluid {
     color: var(--text-primary);
 }
+/* Modal auditoría */
+.modal pre,
+.modal code,
+.modal textarea,
+.modal .bg-white,
+.modal .bg-light {
+    background: var(--page-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--card-border) !important;
+}
+.badge.bg-light {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+.badge.text-dark {
+    color: #e2e8f0 !important;
+}.table .badge {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155 !important;
+}
