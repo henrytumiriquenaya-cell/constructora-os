@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,102 +7,102 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LogCambio extends Model
 {
     protected $table = 'log_cambios';
-
     protected $primaryKey = 'id_log';
-
     public $timestamps = false;
 
-    // Columnas reales de la tabla en SQL Server
     protected $fillable = [
-        'tabla',            // nombre de la tabla afectada (e.g. 'proyecto', 'sesion')
-        'id_registro',      // PK del registro afectado (NULL para sesiones)
-        'campo',            // campo modificado, o tipo de op: LOGIN/LOGOUT/I/U/D
-        'valor_antes',      // valor anterior (o descripción breve)
-        'valor_despues',    // valor nuevo (o descripción breve)
-        'fecha_cambio',     // datetime del evento
-        'usuario',          // nombre de usuario (string, e.g. 'juan.perez')
-        'id_usuario',       // FK INT a usuario (puede ser NULL en registros de trigger)
-        'datos_anteriores', // JSON completo datos anteriores
-        'datos_nuevos',     // JSON completo datos nuevos
+        'tabla',
+        'accion',           // ← nueva: I / U / D / LOGIN / LOGOUT
+        'id_registro',
+        'campo',
+        'valor_antes',
+        'valor_despues',
+        'fecha_cambio',
+        'usuario',
+        'id_usuario',
+        'ip_address',       // ← nueva
+        'datos_anteriores',
+        'datos_nuevos',
     ];
 
     protected $casts = [
         'fecha_cambio' => 'datetime',
     ];
 
-    /**
-     * Relación con el modelo Usuario mediante id_usuario (FK app-level).
-     */
     public function usuario(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
     }
 
-    /**
-     * Devuelve un label legible del campo 'campo' para la vista.
-     */
-    public function tipoLabel(): string
-    {
-        return match (strtoupper((string) $this->campo)) {
-            'LOGIN'  => 'Login',
-            'LOGOUT' => 'Logout',
-            'I'      => 'Inserción',
-            'U'      => 'Actualización',
-            'D'      => 'Eliminación',
-            default  => $this->campo ?? '—',
-        };
-    }
-
-    /**
-     * Indica si el registro fue generado por la app (tiene tipo_operacion reconocido).
-     */
-    public function esEventoApp(): bool
-    {
-        return in_array(strtoupper((string) $this->campo), ['LOGIN', 'LOGOUT', 'I', 'U', 'D'], true);
-    }
-
-    /**
-     * Accesor para tipo_operacion (mapeado a campo)
-     */
+    // ── Accesor tipo_operacion ──────────────────────────────────────────
+    // Prioridad: columna accion (triggers) → campo (app legacy)
     public function getTipoOperacionAttribute(): string
     {
-        return $this->campo ?? '';
+        $accion = strtoupper((string) ($this->attributes['accion'] ?? ''));
+        if ($accion !== '') return $accion;
+        return strtoupper((string) ($this->campo ?? ''));
     }
 
-    /**
-     * Accesor para tabla_afectada (mapeado a tabla)
-     */
+    // ── Accesor tabla_afectada ──────────────────────────────────────────
     public function getTablaAfectadaAttribute(): string
     {
         return $this->tabla ?? '';
     }
 
-    /**
-     * Accesor para fecha_hora (mapeado a fecha_cambio)
-     */
+    // ── Accesor fecha_hora ──────────────────────────────────────────────
     public function getFechaHoraAttribute()
     {
         return $this->fecha_cambio;
     }
 
-    /**
-     * Accesor para descripcion (mapeado a valor_despues o auto-generado para legacy/triggers)
-     */
+    // ── Accesor descripcion ─────────────────────────────────────────────
     public function getDescripcionAttribute(): string
     {
-        $tipo = strtoupper((string) $this->campo);
-        if (in_array($tipo, ['LOGIN', 'LOGOUT', 'I', 'U', 'D'], true)) {
+        $tipo = $this->tipo_operacion;
+
+        // Eventos de sesión
+        if (in_array($tipo, ['LOGIN', 'LOGOUT'], true)) {
             return $this->valor_despues ?? '';
         }
 
-        // Caso legacy/trigger: $campo es la columna modificada
-        if ($this->campo) {
-            $antes = $this->valor_antes ?? 'vacío';
+        // INSERT desde trigger → valor_despues tiene el resumen
+        if ($tipo === 'I') {
+            return $this->valor_despues ?? 'Registro creado';
+        }
+
+        // DELETE desde trigger → valor_antes tiene el resumen
+        if ($tipo === 'D') {
+            return $this->valor_antes ?? 'Registro eliminado';
+        }
+
+        // UPDATE → campo es el nombre de la columna modificada
+        if ($tipo === 'U') {
+            if ($this->campo === 'registro_completo') {
+                return $this->valor_despues ?? $this->valor_antes ?? '';
+            }
+            $antes   = $this->valor_antes   ?? 'vacío';
             $despues = $this->valor_despues ?? 'vacío';
-            return "Modificó el campo '{$this->campo}' de '{$antes}' a '{$despues}'";
+            return "Modificó '{$this->campo}' de '{$antes}' a '{$despues}'";
         }
 
         return $this->valor_despues ?? '—';
     }
-}
 
+    // ── Helpers ─────────────────────────────────────────────────────────
+    public function tipoLabel(): string
+    {
+        return match ($this->tipo_operacion) {
+            'LOGIN'  => 'Login',
+            'LOGOUT' => 'Logout',
+            'I'      => 'Inserción',
+            'U'      => 'Actualización',
+            'D'      => 'Eliminación',
+            default  => $this->tipo_operacion ?: '—',
+        };
+    }
+
+    public function esEventoApp(): bool
+    {
+        return in_array($this->tipo_operacion, ['LOGIN', 'LOGOUT', 'I', 'U', 'D'], true);
+    }
+}

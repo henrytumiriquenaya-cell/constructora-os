@@ -310,18 +310,38 @@
                         <label class="fw-semibold text-muted small mb-1 d-block">
                             <i class="fas fa-clock-rotate-left me-1 text-warning"></i>Datos anteriores
                         </label>
-                        <pre id="preAnteriores"
-                             class="rounded-3 p-3 mb-0"
-                             style="background:#fffbeb;border:1px solid #fde68a;font-size:0.75rem;max-height:320px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+                        <div id="preAnteriores"
+                            class="rounded-3 p-2 mb-0"
+                            style="
+                                background:#1e293b;
+                                border:1px solid #334155;
+                                color:#fca5a5;
+                                font-size:0.75rem;
+                                line-height:1.2;
+                                max-height:320px;
+                                overflow-y:auto;
+                                white-space:pre-wrap;
+                        ">
+                        </div>
                     </div>
                     {{-- Datos nuevos --}}
                     <div class="col-12 col-md-6" id="colNuevos">
                         <label class="fw-semibold text-muted small mb-1 d-block">
                             <i class="fas fa-file-circle-check me-1 text-success"></i>Datos nuevos
                         </label>
-                        <pre id="preNuevos"
-                             class="rounded-3 p-3 mb-0"
-                             style="background:#ecfdf5;border:1px solid #6ee7b7;font-size:0.75rem;max-height:320px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+                        <div id="preNuevos"
+                            class="rounded-3 p-2 mb-0"
+                            style="
+                                background:#1e293b;
+                                border:1px solid #334155;
+                                color:#86efac;
+                                font-size:0.75rem;
+                                line-height:1.2;
+                                max-height:320px;
+                                overflow-y:auto;
+                                white-space:pre-wrap;
+                        ">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -332,7 +352,33 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalDetalle');
+    function renderJson(objActual, objComparacion, colorCambio) {
 
+    let html = '';
+
+    Object.keys(objActual).forEach(key => {
+
+        const valor = objActual[key];
+        const cambio =
+            JSON.stringify(valor) !==
+            JSON.stringify(objComparacion?.[key]);
+
+      html += `
+        <div style="
+            padding:1px 4px;
+            margin:0;
+            line-height:1.1;
+            border-left:${cambio ? '3px solid #22c55e' : '3px solid transparent'};
+            background:${cambio ? colorCambio : 'transparent'};
+        ">
+            <span style="color:#94a3b8;font-weight:600;">${key}:</span>
+            <span style="color:#e2e8f0;"> ${valor ?? '(vacío)'}</span>
+        </div>
+        `;
+    });
+
+    return html;
+}
     modal.addEventListener('show.bs.modal', function (event) {
         const btn         = event.relatedTarget;
         const tipo        = btn.getAttribute('data-tipo');
@@ -355,8 +401,50 @@ document.addEventListener('DOMContentLoaded', function () {
         const colAnt  = document.getElementById('colAnteriores');
         const colNuev = document.getElementById('colNuevos');
 
-        preAnt.textContent  = fmt(anteriores);
-        preNuev.textContent = fmt(nuevos);
+    try {
+
+        const objAnt = anteriores
+            ? JSON.parse(anteriores)
+            : null;
+
+        const objNue = nuevos
+            ? JSON.parse(nuevos)
+            : null;
+
+        if (objAnt && objNue) {
+
+            preAnt.innerHTML =
+                renderJson(
+                    objAnt,
+                    objNue,
+                    'rgba(239,68,68,.18)'
+                );
+
+            preNuev.innerHTML =
+                renderJson(
+                    objNue,
+                    objAnt,
+                    'rgba(34,197,94,.18)'
+                );
+        }
+        else {
+
+            preAnt.innerHTML =
+                objAnt
+                    ? renderJson(objAnt, {}, 'rgba(239,68,68,.18)')
+                    : '(sin datos)';
+
+            preNuev.innerHTML =
+                objNue
+                    ? renderJson(objNue, {}, 'rgba(34,197,94,.18)')
+                    : '(sin datos)';
+        }
+
+    } catch {
+
+        preAnt.textContent = anteriores || '(sin datos)';
+        preNuev.textContent = nuevos || '(sin datos)';
+    }
 
         // Si solo hay un lado, ocupar todo el ancho
         if (!anteriores) { colAnt.classList.add('d-none'); colNuev.classList.replace('col-md-6','col-md-12'); }
