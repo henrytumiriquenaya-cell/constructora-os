@@ -65,7 +65,6 @@ class ContratoController extends Controller
         $contrato = Contrato::findOrFail($id);
         $data = $request->validate([
             'fecha_fin_prevista'=> 'required|date',
-            'fecha_fin_real'    => 'nullable|date',
             'monto_total'       => 'required|numeric|min:0',
             'moneda'            => 'required|in:BOB,USD,EUR',
             'tipo_contrato'     => 'required|in:llave_en_mano,administracion,mixto',

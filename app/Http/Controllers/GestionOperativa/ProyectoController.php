@@ -32,7 +32,7 @@ class ProyectoController extends Controller
             'fecha_fin_programada'=> 'nullable|date',
             'tipo_obra'           => 'nullable|string|max:80',
             'superficie_m2'       => 'nullable|numeric|min:0',
-            'estado'              => 'required|in:planificacion,en_ejecucion,pausado,concluido,cancelado',
+            'estado'              => 'required|in:planificacion,en_ejecucion,paralizado,concluido,cancelado, abandonado',
             'porcentaje_avance'   => 'nullable|integer|min:0|max:100',
         ]);
 
@@ -67,7 +67,7 @@ class ProyectoController extends Controller
             'fecha_fin_real'      => 'nullable|date',
             'tipo_obra'           => 'nullable|string|max:80',
             'superficie_m2'       => 'nullable|numeric|min:0',
-            'estado'              => 'required|in:planificacion,en_ejecucion,pausado,concluido,cancelado',
+            'estado'              => 'required|in:planificacion,en_ejecucion,paralizado,concluido,cancelado,abandonado',
             'porcentaje_avance'   => 'nullable|integer|min:0|max:100',
         ]);
 

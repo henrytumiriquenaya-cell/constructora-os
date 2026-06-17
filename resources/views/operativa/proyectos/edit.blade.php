@@ -66,7 +66,7 @@
             <div class="col-md-6">
                 <label class="form-label">Estado <span class="text-danger">*</span></label>
                 <select name="estado" class="form-select @error('estado') is-invalid @enderror" required>
-                    @foreach(['planificacion','en_ejecucion','pausado','concluido','cancelado'] as $est)
+                    @foreach(['planificacion','en_ejecucion','paralizado','concluido','cancelado','abandonado'] as $est)
                         <option value="{{ $est }}" {{ old('estado', $proyecto->estado) == $est ? 'selected' : '' }}>{{ ucfirst(str_replace('_',' ',$est)) }}</option>
                     @endforeach
                 </select>
