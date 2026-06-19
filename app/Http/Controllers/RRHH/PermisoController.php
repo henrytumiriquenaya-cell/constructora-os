@@ -5,6 +5,7 @@ namespace App\Http\Controllers\RRHH;
 use App\Http\Controllers\Controller;
 use App\Models\Permiso;
 use Illuminate\Http\Request;
+use App\Models\Proyecto;
 
 class PermisoController extends Controller
 {
@@ -16,7 +17,9 @@ class PermisoController extends Controller
 
     public function create()
     {
-        return view('rrhh.permisos.create');
+        $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
+
+        return view('rrhh.permisos.create', compact('proyectos'));
     }
 
     public function store(Request $request)
@@ -37,6 +40,7 @@ class PermisoController extends Controller
         $permiso->fecha_vencimiento = $request->fecha_vencimiento;
         $permiso->costo_tramite = $request->costo_tramite ?? 0;
         $permiso->estado = $request->estado;
+        $permiso->id_proyecto = $request->id_proyecto;
         $permiso->save();
 
         return redirect()->route('rrhh.permisos.index')->with('success', 'Permiso registrado correctamente.');

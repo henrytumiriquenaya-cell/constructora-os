@@ -3,14 +3,44 @@
 return [
 
     'roles' => [
-        'administrador' => ['aliases' => ['adm', 'adm.', 'admin', 'administrador']],
-        'gerente'       => ['aliases' => ['gerente', 'ger.']],
-        'contador'      => ['aliases' => ['contador', 'contab', 'contab.']],
-        'jefe_obra'     => ['aliases' => ['jefe_obra', 'j.obra', 'jefe de obra', 'jefe obra']],
-        'logistica'     => ['aliases' => ['logistica', 'logist', 'logist.']],
-        'rrhh'          => ['aliases' => ['rrhh', 'recursos humanos']],
-        'cliente'       => ['aliases' => ['cliente']],
-        'lector'        => ['aliases' => ['lector']],
+            'admin' => ['aliases' => ['admin', 'adm', 'administrador'] ],
+
+            'gerente' => [
+                'aliases' => ['gerente', 'ger']
+            ],
+
+            'director' => [
+                'aliases' => ['director', 'dir']
+            ],
+
+            'residente' => [
+                'aliases' => ['residente', 'residente_obra']
+            ],
+
+            'contador' => [
+                'aliases' => ['contador', 'contab', 'contabilidad']
+            ],
+
+            'rrhh' => [
+                'aliases' => ['rrhh', 'recursos humanos', 'recursos_humanos']
+            ],
+
+            'logistica' => [
+                'aliases' => ['logistica', 'log']
+            ],
+
+            'supervisor' => [
+                'aliases' => ['supervisor', 'sup']
+            ],
+
+            'obrero' => [
+                'aliases' => ['obrero']
+            ],
+
+            'cliente' => [
+                'aliases' => ['cliente']
+            ],
+
     ],
 
     'finanzas' => [
@@ -42,8 +72,16 @@ return [
         'obras_terminadas', 'mantenimiento', 'documento', 'permiso',
     ],
 
-    'global_read_roles' => ['gerente', 'contador', 'jefe_obra', 'logistica', 'rrhh'],
-
+    'global_read_roles' => [
+        'admin',
+        'gerente',
+        'director',
+        'residente',
+        'contador',
+        'rrhh',
+        'logistica',
+        'supervisor'
+    ],
     'route_tables' => [
         'dashboard' => null,
         'operativa.clientes.index' => 'cliente',
@@ -85,38 +123,15 @@ return [
         'operativa.cuotas.update' => 'cuotas_pago',
         'operativa.cuotas.destroy' => 'cuotas_pago',
         'operativa.maquinarias.catalogo' => 'maquinaria',
-        'operativa.maquinarias.catalogo_create' => 'maquinaria',
-        'operativa.maquinarias.catalogo_store' => 'maquinaria',
-        'operativa.maquinarias.catalogo_edit' => 'maquinaria',
-        'operativa.maquinarias.catalogo_update' => 'maquinaria',
-        'operativa.maquinarias.catalogo_destroy' => 'maquinaria',
         'operativa.maquinarias.index' => 'asignacion_maquinaria',
-        'operativa.maquinarias.create' => 'asignacion_maquinaria',
-        'operativa.maquinarias.store' => 'asignacion_maquinaria',
-        'operativa.maquinarias.edit' => 'asignacion_maquinaria',
-        'operativa.maquinarias.update' => 'asignacion_maquinaria',
-        'operativa.maquinarias.destroy' => 'asignacion_maquinaria',
         'operativa.proveedores.index' => 'proveedor',
-        'operativa.proveedores.create' => 'proveedor',
-        'operativa.proveedores.store' => 'proveedor',
-        'operativa.proveedores.edit' => 'proveedor',
-        'operativa.proveedores.update' => 'proveedor',
-        'operativa.proveedores.destroy' => 'proveedor',
         'rrhh.empleados.index' => 'empleado',
-        'rrhh.empleados.create' => 'empleado',
-        'rrhh.empleados.store' => 'empleado',
-        'rrhh.empleados.edit' => 'empleado',
-        'rrhh.empleados.update' => 'empleado',
-        'rrhh.empleados.destroy' => 'empleado',
         'rrhh.asignaciones.index' => 'asignacion_empleado',
         'rrhh.pagos.index' => 'pago_empleado',
         'rrhh.permisos.index' => 'permiso',
         'rrhh.feriados.index' => 'feriado',
         'reportes.costos.index' => 'resumen_costos',
         'reportes.alertas.index' => 'notificaciones',
-        'reportes.alertas.marcar-todas' => 'notificaciones',
-        'reportes.alertas.marcar-leida' => 'notificaciones',
-        'reportes.alertas.eliminar' => 'notificaciones',
         'reportes.log.index' => 'log_cambios',
         'configuracion.usuarios.index' => 'usuario',
         'configuracion.usuarios.create' => 'usuario',
@@ -125,6 +140,13 @@ return [
         'configuracion.usuarios.update' => 'usuario',
         'configuracion.usuarios.destroy' => 'usuario',
         'configuracion.usuarios.restaurar' => 'usuario',
+        'operativa.materiales.index' => 'material',
+        'operativa.materiales.create' => 'material',
+        'operativa.materiales.store' => 'material',
+        'operativa.materiales.show' => 'material',
+        'operativa.materiales.edit' => 'material',
+        'operativa.materiales.update' => 'material',
+        'operativa.materiales.destroy' => 'material',
     ],
 
     'menu' => [
@@ -140,6 +162,8 @@ return [
         ['route' => 'operativa.asistencia.index', 'table' => 'registro_horas', 'label' => 'Control de Horas'],
         ['route' => 'operativa.paralizaciones.index', 'table' => 'paralizacion', 'label' => 'Paralizaciones'],
         ['route' => 'operativa.finalizadas.index', 'table' => 'obras_terminadas', 'label' => 'Obras Finalizadas'],
+        [
+        'route' => 'operativa.materiales.index', 'table' => 'material', 'label' => 'Materiales'],
     ],
 
     'menu_rrhh' => [
@@ -151,3 +175,4 @@ return [
     ],
 
 ];
+ 

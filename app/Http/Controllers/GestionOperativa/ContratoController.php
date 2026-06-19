@@ -18,24 +18,15 @@ class ContratoController extends Controller
         $query = Contrato::with('cliente')
             ->orderByDesc('id_contrato');
 
+        // ✅ NUEVO SISTEMA DE ROLES
+        if ($usuario->hasRole('cliente')) {
 
-        if ($usuario->rol === 'cliente') {
-
-            $query->where(
-                'id_cliente',
-                $usuario->id_cliente
-            );
-
+            $query->where('id_cliente', $usuario->id_cliente);
         }
-
 
         $contratos = $query->paginate(15);
 
-
-        return view(
-            'operativa.contratos.index',
-            compact('contratos')
-        );
+        return view('operativa.contratos.index', compact('contratos'));
     }
 
     public function create()

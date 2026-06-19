@@ -12,13 +12,19 @@ class AuditObserver
 {
     private array $tablasAuditadas = [
         'proyecto',
+        'ciudad',
         'contrato',
         'empleado',
         'pago',
         'compra',
         'maquinaria',
-        'materiales',
+        'material',
         'usuario',
+        'asignacion_empleado',
+        'asignacion_maquinaria',
+        'uso_material',
+        'detalle_compra',
+        'registro_horas_diario',
     ];
 
     /**

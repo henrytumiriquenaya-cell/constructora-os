@@ -41,6 +41,18 @@
                     </select>
                 </div>
                 <div class="col-md-6">
+                    <label class="form-label">Operador *</label>
+                    <select name="id_empleado" class="form-select">
+                        <option value="">Seleccionar operador</option>
+
+                        @foreach($empleados as $e)
+                            <option value="{{ $e->id_empleado }}">
+                                {{ $e->nombres }} {{ $e->apellidos }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label">Fecha Inicio *</label>
                     <input type="date" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', date('Y-m-d')) }}" required>
                 </div>
@@ -49,20 +61,19 @@
                     <input type="date" name="fecha_fin" class="form-control" value="{{ old('fecha_fin') }}">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Horas Asignadas *</label>
-                    <input type="number" step="0.5" min="0" name="horas_asignadas" class="form-control" value="{{ old('horas_asignadas') }}" required placeholder="Ej: 120">
+                    <label class="form-label">Horas Usadas *</label>
+                    <input type="number" step="0.5" min="0"
+                        name="horas_usadas"
+                        class="form-control"
+                        value="{{ old('horas_usadas') }}"
+                        required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Costo/Hora Aplicado (Bs.)</label>
-                    <input type="number" step="0.01" min="0" name="costo_hora_aplicado" class="form-control" value="{{ old('costo_hora_aplicado') }}" placeholder="0.00">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Operador</label>
-                    <input type="text" name="operador" class="form-control" value="{{ old('operador') }}" placeholder="Nombre del operador">
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Observaciones</label>
-                    <textarea name="observaciones" class="form-control" rows="2" placeholder="Notas adicionales...">{{ old('observaciones') }}</textarea>
+                    <label class="form-label">Costo Total (Bs.)</label>
+                    <input type="number" step="0.01" min="0"
+                        name="costo_total"
+                        class="form-control"
+                        value="{{ old('costo_total') }}">
                 </div>
             </div>
             <div class="d-flex gap-2 mt-4">

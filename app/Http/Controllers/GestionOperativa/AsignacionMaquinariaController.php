@@ -7,28 +7,37 @@ use Illuminate\Http\Request;
 use App\Models\Maquinaria;
 use App\Models\Proyecto;
 use App\Models\AsignacionMaquinaria;
+use App\Models\Empleado;
 
 class AsignacionMaquinariaController extends Controller
 {
     public function index()
     {
-        $asignaciones = AsignacionMaquinaria::with(['maquinaria', 'proyecto'])
+        $asignaciones = AsignacionMaquinaria::with(['maquinaria', 'proyecto','empleado'])
             ->orderByDesc('id_asig_maq')
             ->paginate(15);
         return view('operativa.maquinarias.asignaciones', compact('asignaciones'));
     }
 
     public function create()
-    {
-        $maquinarias = Maquinaria::where('estado', 'disponible')
-                        ->orderBy('nombre')
-                        ->get();
-        
-        $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
+{
+    $maquinarias = Maquinaria::where('estado_actual', 'disponible')
+                    ->orderBy('nombre')
+                    ->get();
 
-        return view('operativa.maquinarias.create', compact('maquinarias', 'proyectos'));
-    }
+    $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
 
+    $empleados = Empleado::where('activo', 1)
+                    ->orderBy('apellidos')
+                    ->orderBy('nombres')
+                    ->get();
+
+    return view('operativa.maquinarias.create', compact(
+        'maquinarias',
+        'proyectos',
+        'empleados'
+    ));
+}
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -37,10 +46,8 @@ class AsignacionMaquinariaController extends Controller
             'id_empleado'         => 'nullable|integer|exists:empleado,id_empleado',
             'fecha_inicio'        => 'required|date',
             'fecha_fin'           => 'nullable|date|after_or_equal:fecha_inicio',
-            'horas_asignadas'     => 'required|numeric|min:0',
-            'costo_hora_aplicado' => 'nullable|numeric|min:0',
-            'operador'            => 'nullable|string|max:100',
-            'observaciones'       => 'nullable|string',
+            'horas_usadas'        => 'required|numeric|min:0',
+            'costo_total'         => 'nullable|numeric|min:0',
         ]);
 
         AsignacionMaquinaria::create($data);
@@ -66,9 +73,7 @@ class AsignacionMaquinariaController extends Controller
         $data = $request->validate([
             'fecha_fin'           => 'nullable|date',
             'horas_usadas'        => 'nullable|numeric|min:0',
-            'costo_hora_aplicado' => 'nullable|numeric|min:0',
-            'operador'            => 'nullable|string|max:100',
-            'observaciones'       => 'nullable|string',
+            'costo_total' => 'nullable|numeric|min:0',
         ]);
 
         $asignacion->update($data);
