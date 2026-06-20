@@ -36,7 +36,7 @@
             </div>
             <div>
                 <div class="user-name text-truncate" style="max-width:135px;">{{ $authUser->nombreParaMostrar() }}</div>
-                <div class="user-role">{{ $authUser->rolNormalizado() }}</div>
+                <div class="user-role">{{ Auth::user()->roles->pluck('nombre')->join(', ') ?: 'Sin rol' }}</div>
             </div>
         </div>
         @endauth

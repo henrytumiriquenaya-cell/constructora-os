@@ -13,16 +13,16 @@ class ProyectoController extends Controller
     {
         $usuario = auth()->user();
 
-        if ($usuario->rol === 'cliente') {
+        $esCliente = $usuario->hasRole('cliente');
+
+        if ($esCliente) {
 
             $proyectos = Proyecto::whereHas('contrato', function ($query) use ($usuario) {
-
-                $query->where('id_cliente', $usuario->id_cliente);
-
-            })
-            ->with('contrato')
-            ->orderByDesc('id_proyecto')
-            ->paginate(15);
+                    $query->where('id_cliente', $usuario->id_cliente);
+                })
+                ->with('contrato')
+                ->orderByDesc('id_proyecto')
+                ->paginate(15);
 
         } else {
 
@@ -30,7 +30,6 @@ class ProyectoController extends Controller
                 ->orderByDesc('id_proyecto')
                 ->paginate(15);
         }
-
 
         return view('operativa.proyectos.index', compact('proyectos'));
     }

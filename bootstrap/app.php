@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'role.scope' => \App\Http\Middleware\ApplyRoleScope::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('login'));

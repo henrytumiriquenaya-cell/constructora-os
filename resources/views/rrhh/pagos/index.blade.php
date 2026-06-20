@@ -8,7 +8,47 @@
 @section('content')
     <h3 class="fw-light text-secondary">Recursos Humanos > Registro de Pagos a Empleados</h3>
     <hr>
-    
+    <form method="GET" class="row g-2 mb-3">
+
+        <div class="col-md-4">
+            <select name="cargo" class="form-select">
+                <option value="">Todos los cargos</option>
+
+                @foreach($cargos as $cargo)
+                    <option value="{{ $cargo }}"
+                        {{ request('cargo') == $cargo ? 'selected' : '' }}>
+                        {{ $cargo }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="periodo_mes" class="form-select">
+                <option value="">Todos los periodos</option>
+
+                @foreach($periodos as $periodo)
+                    <option value="{{ $periodo }}"
+                        {{ request('periodo_mes') == $periodo ? 'selected' : '' }}>
+                        {{ $periodo }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                Filtrar
+            </button>
+        </div>
+
+        <div class="col-auto">
+            <a href="{{ url()->current() }}" class="btn btn-secondary">
+                Limpiar
+            </a>
+        </div>
+
+    </form>
     <div class="table-wrapper"><div class="table-responsive">
         <table class="table table-bordered table-hover table-sm align-middle small">
             <thead class="table-head-premium">
@@ -30,8 +70,15 @@
                 <tr>
                     <td>{{ $p->id_pago_emp }}</td>
                     <td>{{ $p->id_pago }}</td>
-                    <td class="fw-bold">
-                        {{ $p->empleado->nombres ?? 'ID: '.$p->id_empleado }} {{ $p->empleado->apellidos ?? '' }}
+                    <td>
+                        <div class="fw-semibold">
+                            {{ $p->empleado->nombres ?? 'ID: '.$p->id_empleado }}
+                            {{ $p->empleado->apellidos ?? '' }}
+                        </div>
+
+                        <small class="text-muted">
+                            {{ $p->empleado->cargo ?? 'Sin cargo' }}
+                        </small>
                     </td>
                     <td>{{ $p->tipo_haber }}</td>
                     <td class="text-center">{{ $p->periodo_mes }}</td>
