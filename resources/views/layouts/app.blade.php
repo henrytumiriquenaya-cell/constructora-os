@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/premium.css?v=' . (time() + 200)) }}">
+    <script>
+    (function() {
+        const saved = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+    })();
+    </script>
 </head>
 <body>
 <div style="display:flex; min-height:100vh;">
@@ -217,6 +223,10 @@
                 <small>@yield('page_subtitle', 'Sistema de Gestión')</small>
             </div>
             <div class="topbar-actions">
+                {{-- Theme toggle --}}
+                <button type="button" id="themeToggle" class="topbar-bell" title="Cambiar tema" style="border:1px solid var(--topbar-border);">
+                    <i class="fas fa-moon" id="themeIcon" style="font-size:0.9rem;"></i>
+                </button>
                 {{-- Bell --}}
                 @if(\Illuminate\Support\Facades\Route::has('reportes.alertas.index'))
                 <a href="{{ route('reportes.alertas.index') }}" class="topbar-bell">
@@ -282,6 +292,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = header.nextElementSibling;
         items.style.maxHeight = items.scrollHeight + "px";
     });
+});
+
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function updateIcon() {
+    const current = document.documentElement.getAttribute('data-theme');
+    themeIcon.className = current === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+}
+updateIcon();
+
+themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateIcon();
 });
 </script>
 @stack('scripts')
