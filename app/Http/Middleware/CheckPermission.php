@@ -30,7 +30,11 @@ class CheckPermission
         $operation = $operation ?? $this->permissions->operationFromRequest($request->method());
 
         if (! $this->permissions->can($user, $table, $operation)) {
-            abort(403, 'No tiene permisos para realizar esta operación.');
+
+            return redirect()
+                ->back()
+                ->with('error', 'No tiene permisos para realizar esta acción.');
+
         }
 
         $request->attributes->set('permission_table', $table);

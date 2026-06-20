@@ -24,4 +24,8 @@ class Cliente extends Model
         'fecha_registro',
         'estado'
     ];
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class, 'id_cliente', 'id_cliente');
+    }
 }

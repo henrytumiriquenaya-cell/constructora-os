@@ -30,7 +30,7 @@ return [
     'rrhh_tables' => ['empleado', 'feriado'],
 
     'cliente_tables' => [
-        'cliente', 'proveedor', 'contrato', 'proyecto', 'cuotas_pago',
+        'cliente', 'contrato', 'proyecto', 'cuotas_pago',
         'obras_terminadas', 'documento', 'permiso', 'notificaciones', 'resumen_costos',
     ],
 

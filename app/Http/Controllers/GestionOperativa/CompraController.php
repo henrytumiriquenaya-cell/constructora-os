@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\Material;
-use App\Models\Proyecto;
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
 
@@ -14,23 +13,21 @@ class CompraController extends Controller
 {
     public function index()
     {
-        $compras = Compra::with(['proyecto', 'proveedor'])
+        $compras = Compra::with(['proveedor'])
                          ->orderByDesc('id_compra')
                          ->paginate(15);
         return view('operativa.compras.index', compact('compras'));
     }
- 
+
     public function create()
     {
-        $proyectos  = Proyecto::orderBy('nombre_proyecto')->get();
         $proveedores = Proveedor::where('activo', 1)->orderBy('razon_social')->get();
-        return view('operativa.compras.create', compact('proyectos', 'proveedores'));
+        return view('operativa.compras.create', compact('proveedores'));
     }
- 
+
     public function store(Request $request)
     {
         $data = $request->validate([
-            'id_proyecto'            => 'nullable|integer',
             'id_proveedor'           => 'required|integer',
             'numero_orden'           => 'required|string|max:30|unique:compra,numero_orden',
             'fecha_emision'          => 'required|date',
@@ -44,18 +41,18 @@ class CompraController extends Controller
 
         Compra::create($data);
         return redirect()->route('operativa.compras.index')
-                         ->with('success', 'Orden de compra registrada.');
+                         ->with('success', 'Orden de compra registrada en almacén central.');
     }
- 
+
     public function show($id)
     {
-        $compra = Compra::with(['proyecto', 'proveedor', 'detalles.material'])->findOrFail($id);
+        $compra = Compra::with(['proveedor', 'detalles.material'])->findOrFail($id);
         return view('operativa.compras.show', compact('compra'));
     }
 
     public function detalle($id)
     {
-        $compra = Compra::with(['proyecto', 'proveedor', 'detalles.material'])->findOrFail($id);
+        $compra = Compra::with(['proveedor', 'detalles.material'])->findOrFail($id);
         $materiales = Material::orderBy('nombre')->get();
 
         return view('operativa.compras.detalle', compact('compra', 'materiales'));
@@ -74,13 +71,13 @@ class CompraController extends Controller
 
         $data['id_compra'] = $compra->id_compra;
         $data['cantidad_recibida'] = $data['cantidad_recibida'] ?? 0;
-        // subtotal se calcula por trigger en SQL Server.
+        // subtotal se calcula por trigger.
         $data['subtotal'] = 0;
 
         DetalleCompra::create($data);
 
         return redirect()->route('operativa.compras.detalle', $compra->id_compra)
-            ->with('success', 'Ítem agregado. El subtotal y total se calcularon automáticamente en la base de datos.');
+            ->with('success', 'Ítem agregado al almacén central. El subtotal y total se calcularon automáticamente.');
     }
 
     public function updateDetalleLote(Request $request, $id)
@@ -108,7 +105,17 @@ class CompraController extends Controller
     public function destroyDetalle($id, $detalleId)
     {
         $detalle = DetalleCompra::where('id_compra', $id)->findOrFail($detalleId);
-        $detalle->delete();
+
+        try {
+            $detalle->delete();
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Código 23000 = violación de constraint
+            if ($e->getCode() === '23000') {
+                return redirect()->route('operativa.compras.detalle', $id)
+                    ->with('error', 'No se puede eliminar: el inventario quedaría en negativo. Ajusta el stock primero.');
+            }
+            throw $e;
+        }
 
         return redirect()->route('operativa.compras.detalle', $id)
             ->with('success', 'Ítem eliminado del detalle de compra.');
@@ -125,17 +132,16 @@ class CompraController extends Controller
         }
 
         return redirect()->route('operativa.compras.detalle', $id)
-            ->with('success', 'Se marcó "Recibir Todo". El inventario/estado se ajustó por la lógica automática de la base de datos.');
+            ->with('success', 'Se marcó "Recibir Todo". El inventario central/estado se ajustó por la lógica automática de la base de datos.');
     }
- 
+
     public function edit($id)
     {
         $compra      = Compra::findOrFail($id);
-        $proyectos   = Proyecto::orderBy('nombre_proyecto')->get();
         $proveedores = Proveedor::orderBy('razon_social')->get();
-        return view('operativa.compras.edit', compact('compra', 'proyectos', 'proveedores'));
+        return view('operativa.compras.edit', compact('compra', 'proveedores'));
     }
- 
+
     public function update(Request $request, $id)
     {
         $compra = Compra::findOrFail($id);
@@ -150,7 +156,7 @@ class CompraController extends Controller
         return redirect()->route('operativa.compras.index')
                          ->with('success', 'Compra actualizada.');
     }
- 
+
     public function destroy($id)
     {
         Compra::findOrFail($id)->delete();

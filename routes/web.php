@@ -18,6 +18,7 @@ use App\Http\Controllers\GestionOperativa\MovimientoInventarioController;
 use App\Http\Controllers\GestionOperativa\ProveedorController;
 use App\Http\Controllers\RRHH\EmpleadoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RRHH\FeriadoController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -38,13 +39,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'update'])->middleware('permission:cliente')->name('operativa.clientes.update');
         Route::delete('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'destroy'])->middleware('permission:cliente')->name('operativa.clientes.destroy');
 
-        Route::get('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'index'])->middleware('permission:proyecto')->name('operativa.proyectos.index');
-        Route::get('/proyectos/create', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'create'])->middleware('permission:proyecto')->name('operativa.proyectos.create');
-        Route::post('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'store'])->middleware('permission:proyecto')->name('operativa.proyectos.store');
+        Route::get('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'index'])->middleware('permission:proyecto,S')->name('operativa.proyectos.index');
+        Route::get('/proyectos/create', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'create'])->middleware('permission:proyecto,I')->name('operativa.proyectos.create');
+        Route::post('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'store'])->middleware('permission:proyecto,I')->name('operativa.proyectos.store');
         Route::get('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'show'])->middleware('permission:proyecto')->name('operativa.proyectos.show');
-        Route::get('/proyectos/{id}/edit', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'edit'])->middleware('permission:proyecto')->name('operativa.proyectos.edit');
-        Route::put('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'update'])->middleware('permission:proyecto')->name('operativa.proyectos.update');
-        Route::delete('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'destroy'])->middleware('permission:proyecto')->name('operativa.proyectos.destroy');
+        Route::get('/proyectos/{id}/edit', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'edit'])->middleware('permission:proyecto,U')->name('operativa.proyectos.edit');
+        Route::put('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'update'])->middleware('permission:proyecto,U')->name('operativa.proyectos.update');
+        Route::delete('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'destroy'])->middleware('permission:proyecto,D')->name('operativa.proyectos.destroy');
 
         Route::get('/registro_horas_diaria', [\App\Http\Controllers\GestionOperativa\RegistroHoraController::class, 'index'])
             ->middleware('permission:registro_horas')->name('operativa.asistencia.index');
@@ -69,13 +70,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/ciudades/{id}', [CiudadController::class, 'update'])->middleware('permission:ciudad')->name('operativa.ciudades.update');
         Route::delete('/ciudades/{id}', [CiudadController::class, 'destroy'])->middleware('permission:ciudad')->name('operativa.ciudades.destroy');
 
-        Route::get('/contratos', [ContratoController::class, 'index'])->middleware('permission:contrato')->name('operativa.contratos.index');
-        Route::get('/contratos/create', [ContratoController::class, 'create'])->middleware('permission:contrato')->name('operativa.contratos.create');
-        Route::post('/contratos', [ContratoController::class, 'store'])->middleware('permission:contrato')->name('operativa.contratos.store');
-        Route::get('/contratos/{id}', [ContratoController::class, 'show'])->middleware('permission:contrato')->name('operativa.contratos.show');
-        Route::get('/contratos/{id}/edit', [ContratoController::class, 'edit'])->middleware('permission:contrato')->name('operativa.contratos.edit');
-        Route::put('/contratos/{id}', [ContratoController::class, 'update'])->middleware('permission:contrato')->name('operativa.contratos.update');
-        Route::delete('/contratos/{id}', [ContratoController::class, 'destroy'])->middleware('permission:contrato')->name('operativa.contratos.destroy');
+        Route::get('/contratos', [ContratoController::class, 'index'])->middleware('permission:contrato,S')->name('operativa.contratos.index');
+        Route::get('/contratos/create', [ContratoController::class, 'create'])->middleware('permission:contrato,I')->name('operativa.contratos.create');
+        Route::post('/contratos', [ContratoController::class, 'store'])->middleware('permission:contrato,U')->name('operativa.contratos.store');
+        Route::get('/contratos/{id}', [ContratoController::class, 'show'])->middleware('permission:contrato,S')->name('operativa.contratos.show');
+        Route::get('/contratos/{id}/edit', [ContratoController::class, 'edit'])->middleware('permission:contrato,U')->name('operativa.contratos.edit');
+        Route::put('/contratos/{id}', [ContratoController::class, 'update'])->middleware('permission:contrato,U')->name('operativa.contratos.update');
+        Route::delete('/contratos/{id}', [ContratoController::class, 'destroy'])->middleware('permission:contrato,D')->name('operativa.contratos.destroy');
 
         Route::get('/compras', [CompraController::class, 'index'])->middleware('permission:compra')->name('operativa.compras.index');
         Route::get('/compras/create', [CompraController::class, 'create'])->middleware('permission:compra')->name('operativa.compras.create');
@@ -97,16 +98,20 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->middleware('permission:cotizacion')->name('operativa.cotizaciones.update');
         Route::delete('/cotizaciones/{id}', [CotizacionController::class, 'destroy'])->middleware('permission:cotizacion')->name('operativa.cotizaciones.destroy');
 
-        Route::get('/cuotas', [CuotasPagoController::class, 'index'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.index');
-        Route::get('/cuotas/create', [CuotasPagoController::class, 'create'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.create');
-        Route::post('/cuotas', [CuotasPagoController::class, 'store'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.store');
+        Route::get('/cuotas', [CuotasPagoController::class, 'index'])->middleware('permission:cuotas_pago,S')->name('operativa.cuotas.index');
+        Route::get('/cuotas/create', [CuotasPagoController::class, 'create'])->middleware('permission:cuotas_pago,I')->name('operativa.cuotas.create');
+        Route::post('/cuotas', [CuotasPagoController::class, 'store'])->middleware('permission:cuotas_pago,U')->name('operativa.cuotas.store');
         Route::post('/cuotas/{id}/registrar-pago', [CuotasPagoController::class, 'registrarPago'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.registrar_pago');
         Route::post('/cuotas/{id}/reanudar-obra', [CuotasPagoController::class, 'reanudarObra'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.reanudar_obra');
-        Route::get('/cuotas/{id}/edit', [CuotasPagoController::class, 'edit'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.edit');
-        Route::put('/cuotas/{id}', [CuotasPagoController::class, 'update'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.update');
-        Route::delete('/cuotas/{id}', [CuotasPagoController::class, 'destroy'])->middleware('permission:cuotas_pago')->name('operativa.cuotas.destroy');
+        Route::get('/cuotas/{id}/edit', [CuotasPagoController::class, 'edit'])->middleware('permission:cuotas_pago,U')->name('operativa.cuotas.edit');
+        Route::put('/cuotas/{id}', [CuotasPagoController::class, 'update'])->middleware('permission:cuotas_pago,U')->name('operativa.cuotas.update');
+        Route::delete('/cuotas/{id}', [CuotasPagoController::class, 'destroy'])->middleware('permission:cuotas_pago,D')->name('operativa.cuotas.destroy');
+
+        Route::get('/cuotas/{id}/registrar-pago', [CuotasPagoController::class, 'registrarPagoForm'])
+            ->middleware('permission:cuotas_pago')->name('operativa.cuotas.registrar_pago_form');
 
         Route::get('/inventario', [InventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.inventario.index');
+        Route::get('/inventario/uso', [InventarioController::class, 'create'])->middleware('permission:uso_material')->name('operativa.inventario.uso.create');
         Route::post('/inventario/uso', [InventarioController::class, 'registrarUso'])->middleware('permission:uso_material')->name('operativa.inventario.uso.store');
 
         Route::get('/catalogo-maquinaria', [MaquinariaController::class, 'index'])->middleware('permission:maquinaria')->name('operativa.maquinarias.catalogo');
@@ -143,13 +148,17 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/materiales/{id}', [MaterialController::class, 'destroy'])->middleware('permission:material')->name('operativa.materiales.destroy');
 
         // ── Movimientos de Inventario CRUD ───────────────────────────────────
-        Route::get('/movimientos', [MovimientoInventarioController::class, 'index'])->middleware('permission:inventario')->name('operativa.movimientos.index');
-        Route::get('/movimientos/create', [MovimientoInventarioController::class, 'create'])->middleware('permission:inventario')->name('operativa.movimientos.create');
-        Route::post('/movimientos', [MovimientoInventarioController::class, 'store'])->middleware('permission:inventario')->name('operativa.movimientos.store');
-        Route::get('/movimientos/{id}/edit', [MovimientoInventarioController::class, 'edit'])->middleware('permission:inventario')->name('operativa.movimientos.edit');
-        Route::put('/movimientos/{id}', [MovimientoInventarioController::class, 'update'])->middleware('permission:inventario')->name('operativa.movimientos.update');
-        Route::delete('/movimientos/{id}', [MovimientoInventarioController::class, 'destroy'])->middleware('permission:inventario')->name('operativa.movimientos.destroy');
-    });
+        Route::post('/inventario/recalcular', [InventarioController::class, 'recalcular'])
+            ->name('operativa.inventario.recalcular');
+        
+        // Las rutas existentes de movimientos (ya deberías tenerlas, solo verificar):
+        Route::get('/movimientos',                [MovimientoInventarioController::class, 'index'])  ->name('operativa.movimientos.index');
+        Route::get('/movimientos/create',         [MovimientoInventarioController::class, 'create']) ->name('operativa.movimientos.create');
+        Route::post('/movimientos',               [MovimientoInventarioController::class, 'store'])  ->name('operativa.movimientos.store');
+        Route::get('/movimientos/{id}/edit',      [MovimientoInventarioController::class, 'edit'])   ->name('operativa.movimientos.edit');
+        Route::put('/movimientos/{id}',           [MovimientoInventarioController::class, 'update']) ->name('operativa.movimientos.update');
+        Route::delete('/movimientos/{id}',        [MovimientoInventarioController::class, 'destroy'])->name('operativa.movimientos.destroy');
+            });
 
     Route::prefix('recursos-humanos')->group(function () {
         Route::get('/empleados', [EmpleadoController::class, 'index'])->middleware('permission:empleado')->name('rrhh.empleados.index');
@@ -172,8 +181,18 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/permisos/{id}', [\App\Http\Controllers\RRHH\PermisoController::class, 'update'])->middleware('permission:permiso')->name('rrhh.permisos.update');
         Route::delete('/permisos/{id}', [\App\Http\Controllers\RRHH\PermisoController::class, 'destroy'])->middleware('permission:permiso')->name('rrhh.permisos.destroy');
 
-        Route::get('/feriados', [EmpleadoController::class, 'feriados'])
+        Route::get('/feriados', [FeriadoController::class, 'index'])
             ->middleware('permission:feriado')->name('rrhh.feriados.index');
+        Route::get('/feriados/create', [FeriadoController::class, 'create'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.create');
+        Route::post('/feriados', [FeriadoController::class, 'store'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.store');
+        Route::get('/feriados/{id}/edit', [FeriadoController::class, 'edit'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.edit');
+        Route::put('/feriados/{id}', [FeriadoController::class, 'update'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.update');
+        Route::delete('/feriados/{id}', [FeriadoController::class, 'destroy'])
+            ->middleware('permission:feriado')->name('rrhh.feriados.destroy');
     });
 
     Route::prefix('reportes')->group(function () {

@@ -11,7 +11,27 @@ class ProyectoController extends Controller
 {
     public function index()
     {
-        $proyectos = Proyecto::with('contrato')->orderByDesc('id_proyecto')->paginate(15);
+        $usuario = auth()->user();
+
+        if ($usuario->rol === 'cliente') {
+
+            $proyectos = Proyecto::whereHas('contrato', function ($query) use ($usuario) {
+
+                $query->where('id_cliente', $usuario->id_cliente);
+
+            })
+            ->with('contrato')
+            ->orderByDesc('id_proyecto')
+            ->paginate(15);
+
+        } else {
+
+            $proyectos = Proyecto::with('contrato')
+                ->orderByDesc('id_proyecto')
+                ->paginate(15);
+        }
+
+
         return view('operativa.proyectos.index', compact('proyectos'));
     }
 
@@ -32,7 +52,7 @@ class ProyectoController extends Controller
             'fecha_fin_programada'=> 'nullable|date',
             'tipo_obra'           => 'nullable|string|max:80',
             'superficie_m2'       => 'nullable|numeric|min:0',
-            'estado'              => 'required|in:planificacion,en_ejecucion,pausado,concluido,cancelado',
+            'estado'              => 'required|in:planificacion,en_ejecucion,paralizado,concluido,cancelado, abandonado',
             'porcentaje_avance'   => 'nullable|integer|min:0|max:100',
         ]);
 
@@ -67,7 +87,7 @@ class ProyectoController extends Controller
             'fecha_fin_real'      => 'nullable|date',
             'tipo_obra'           => 'nullable|string|max:80',
             'superficie_m2'       => 'nullable|numeric|min:0',
-            'estado'              => 'required|in:planificacion,en_ejecucion,pausado,concluido,cancelado',
+            'estado'              => 'required|in:planificacion,en_ejecucion,paralizado,concluido,cancelado,abandonado',
             'porcentaje_avance'   => 'nullable|integer|min:0|max:100',
         ]);
 

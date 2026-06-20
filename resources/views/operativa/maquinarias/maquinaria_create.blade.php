@@ -19,7 +19,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Código *</label>
-                    <input type="text" name="codigo" class="form-control" value="{{ old('codigo') }}" required placeholder="MAQ-001">
+                    <input type="text" name="codigo_inventario" class="form-control" value="{{ old('codigo_inventario') }}" required placeholder="MAQ-001">
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Nombre *</label>
@@ -55,8 +55,8 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Estado *</label>
-                    <select name="estado" class="form-select" required>
-                        @foreach(['disponible','en_uso','mantenimiento','baja'] as $est)
+                    <select name="estado_actual" class="form-select" required>
+                        @foreach(['disponible','en_uso','en_mantenimiento','fuera_servicio'] as $est)
                             <option value="{{ $est }}" {{ old('estado','disponible') === $est ? 'selected' : '' }}>{{ str_replace('_',' ', ucfirst($est)) }}</option>
                         @endforeach
                     </select>

@@ -9,21 +9,23 @@ class Maquinaria extends Model
     protected $table = 'maquinaria';
     protected $primaryKey = 'id_maquinaria';
     public $timestamps = false;
- 
+
     protected $fillable = [
-        'codigo',
-        'nombre',
-        'tipo',
-        'marca',
-        'modelo',
-        'anio_fabricacion',
-        'numero_serie',
-        'capacidad',
-        'unidad_capacidad',
-        'estado',
-        'costo_hora',
-        'observaciones',
-    ];
+    'codigo_inventario',
+    'nombre',
+    'tipo',
+    'marca',
+    'modelo',
+    'anio_fabricacion',
+    'numero_serie',
+    'capacidad',
+    'unidad_capacidad',
+    'tipo_propiedad',   
+    'estado_actual',
+    'fecha_adquisicion',
+    'costo_hora',
+    'observaciones',
+];
  
     public function asignaciones()
     {

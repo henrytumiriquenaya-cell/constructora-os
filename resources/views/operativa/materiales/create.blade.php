@@ -45,45 +45,51 @@
                 @enderror
             </div>
 
-            {{-- Cantidad --}}
             <div class="col-md-6">
-                <label class="form-label" for="cantidad">
-                    Cantidad inicial <span class="text-danger">*</span>
+                <label class="form-label" for="codigo_interno">
+                    Codigo Interno <span class="text-danger">*</span>
                 </label>
-                <input type="number"
-                       id="cantidad"
-                       name="cantidad"
-                       class="form-control @error('cantidad') is-invalid @enderror"
-                       value="{{ old('cantidad', 0) }}"
-                       step="0.01"
-                       min="0"
-                       placeholder="0.00"
+                <input type="text"
+                       id="codigo_interno"
+                       name="codigo_interno"
+                       class="form-control @error('codigo_interno') is-invalid @enderror"
+                       value="{{ old('codigo_interno') }}"
+                       placeholder="Ej. MAT-0078"
                        required>
-                @error('cantidad')
+                @error('codigo_interno')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-
-            {{-- Destino (Proyecto) --}}
-            <div class="col-md-12">
-                <label class="form-label" for="id_proyecto">
-                    Destino — Proyecto
+             <div class="col-md-6">
+                <label class="form-label" for="categoria">
+                    Categoria <span class="text-danger">*</span>
                 </label>
-                <select id="id_proyecto"
-                        name="id_proyecto"
-                        class="form-select @error('id_proyecto') is-invalid @enderror">
-                    <option value="">Sin destino asignado</option>
-                    @foreach($proyectos as $p)
-                        <option value="{{ $p->id_proyecto }}"
-                                {{ old('id_proyecto') == $p->id_proyecto ? 'selected' : '' }}>
-                            {{ $p->nombre_proyecto }}
-                            @if($p->codigo_proyecto) — {{ $p->codigo_proyecto }} @endif
-                        </option>
-                    @endforeach
-                </select>
-                @error('id_proyecto')
+                <input type="text"
+                       id="categoria"
+                       name="categoria"
+                       class="form-control @error('categoria') is-invalid @enderror"
+                       value="{{ old('categoria') }}"
+                       placeholder="Ej. madera,acero"
+                       required>
+                @error('categoria')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+            <div class="col-md-4">
+                    <label class="form-label">Unidad de Medida *</label>
+                    <select name="unidad_medida" class="form-select" required>
+                        @foreach(['kg','ton','m','m2','m3','lt','pieza'] as $est)
+                            <option value="{{ $est }}" {{ old('unidad_medida','kg') === $est ? 'selected' : '' }}>{{ str_replace('_',' ', ucfirst($est)) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+             <div class="col-md-6">
+                    <label class="form-label">Precio unitario (Bs.)</label>
+                    <input type="number" step="0.01" min="0" name="precio_unitario_ref" class="form-control" value="{{ old('precio_unitario_ref') }}" placeholder="0.00">
+            </div>
+             <div class="col-md-6">
+                    <label class="form-label">stock_minimo</label>
+                    <input type="number" step="0.01" min="0" name="stock_minimo" class="form-control" value="{{ old('stock_minimo') }}" placeholder="0.00">
             </div>
 
             {{-- Descripción --}}

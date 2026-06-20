@@ -30,73 +30,50 @@
 
         <div class="row g-3 mt-1">
             {{-- Nombre --}}
+             <div class="col-md-6">
+                    <label class="form-label">Nombre del Material <span class="text-danger">*</span></label>
+                    <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $material->nombre) }}" required>
+             </div>
+
+             <div class="col-md-6">
+                    <label class="form-label">Código Interno</label>
+                    <input type="text" name="codigo_interno" class="form-control" value="{{ old('codigo_interno', $material->codigo_interno) }}">
+             </div>
+
+            
             <div class="col-md-6">
-                <label class="form-label" for="nombre">
-                    Nombre del Material <span class="text-danger">*</span>
-                </label>
-                <input type="text"
-                       id="nombre"
-                       name="nombre"
-                       class="form-control @error('nombre') is-invalid @enderror"
-                       value="{{ old('nombre', $material->nombre) }}"
-                       required>
-                @error('nombre')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Cantidad --}}
+                    <label class="form-label">Categoria <span class="text-danger">*</span></label>
+                    <input type="text" name="categoria" class="form-control" value="{{ old('categoria', $material->categoria) }}" required>
+             </div>
             <div class="col-md-6">
-                <label class="form-label" for="cantidad">
-                    Cantidad <span class="text-danger">*</span>
-                </label>
-                <input type="number"
-                       id="cantidad"
-                       name="cantidad"
-                       class="form-control @error('cantidad') is-invalid @enderror"
-                       value="{{ old('cantidad', $material->cantidad ?? 0) }}"
-                       step="0.01"
-                       min="0"
-                       required>
-                @error('cantidad')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                    <label class="form-label">Unidad de medida <span class="text-danger">*</span></label>
+                    <select name="unidad_medida" class="form-select" required>
+                        @foreach(['kg','ton','m','m2','m3','lt','pieza'] as $est)
+                            <option value="{{ $est }}" {{ old('unidad_medida','kg') === $est ? 'selected' : '' }}>{{ str_replace('_',' ', ucfirst($est)) }}</option>
+                        @endforeach
+                    </select>
             </div>
-
-            {{-- Destino (Proyecto) --}}
-            <div class="col-md-12">
-                <label class="form-label" for="id_proyecto">
-                    Destino — Proyecto
-                </label>
-                <select id="id_proyecto"
-                        name="id_proyecto"
-                        class="form-select @error('id_proyecto') is-invalid @enderror">
-                    <option value="">Sin destino asignado</option>
-                    @foreach($proyectos as $p)
-                        <option value="{{ $p->id_proyecto }}"
-                                {{ old('id_proyecto', $material->id_proyecto) == $p->id_proyecto ? 'selected' : '' }}>
-                            {{ $p->nombre_proyecto }}
-                            @if($p->codigo_proyecto) — {{ $p->codigo_proyecto }} @endif
-                        </option>
-                    @endforeach
-                </select>
-                @error('id_proyecto')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
+             <div class="col-md-4">
+                    <label class="form-label">Precio Unitario <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" name="precio_unitario_ref" class="form-control" value="{{ old('precio_unitario_ref', $material->precio_unitario_ref) }}" required>
+                </div>
+             <div class="col-md-4">
+                    <label class="form-label">Stock mininmo <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" name="stock_minimo" class="form-control" value="{{ old('stock_minimo', $material->stock_minimo) }}" required>
+                </div>
             {{-- Descripción --}}
             <div class="col-12">
                 <label class="form-label" for="descripcion">Descripción</label>
                 <textarea id="descripcion"
                           name="descripcion"
                           class="form-control @error('descripcion') is-invalid @enderror"
-                          rows="3">{{ old('descripcion', $material->descripcion) }}</textarea>
+                          rows="3"
+                          placeholder="Detalles sobre el material, especificaciones, usos...">{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-        </div>
+        </di
 
         <hr class="form-divider">
 
