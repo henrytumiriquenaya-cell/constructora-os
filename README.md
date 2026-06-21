@@ -4,10 +4,9 @@
    │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │
    └───┬────┘  └───┬────┘  └───┬────┘  └───┬────┘  └───┬────┘
        └───────────┴───────────┼───────────┴───────────┘
-                      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-                      ▓ CONSTRUCTORA OS ▓
-                      ▓                 ▓
-                      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                          ▓▓▓▓▓▓▓▓▓▓▓
+                          ▓ CONSTRUCTORA OS ▓
+                          ▓▓▓▓▓▓▓▓▓▓▓
             One sistema · todas las obras · un solo dato real
 ```
 
@@ -22,6 +21,7 @@
 </p>
 
 <p align="center">
+  <a href="#demo">Demo</a> ·
   <a href="#descripción-general">Descripción</a> ·
   <a href="#módulos-del-sistema">Módulos</a> ·
   <a href="#stack-tecnológico">Stack</a> ·
@@ -36,8 +36,8 @@ Constructora OS reemplaza el manejo disperso de información de una constructora
 
 ```
   cliente · contrato · cotización
-            │
-            ▼
+                │
+                ▼
   ┌────────────────────────────────────────────────────────┐
   │              CONSTRUCTORA OS                           │
   │  ────────────────────────────────────────────────────  │
@@ -53,10 +53,22 @@ Constructora OS reemplaza el manejo disperso de información de una constructora
   │   Triggers MySQL: totales · stock · estados             │
   │   AuditObserver: registro de cambios                    │
   └─────────────────────────────────────────────────────────┘
-            │
-            ▼
+                │
+                ▼
    reportes de costos · log de auditoría · planillas
 ```
+
+## Demo
+
+<p align="center">
+  <img src="public/images/clideo_editor_389c21affe504b04a80cc22af242da02.gif" alt="Demostración de mi página web" width="820">
+  <br/><sub>1. Recorrido general de la interfaz — navegación entre módulos, panel de control y flujo de uso diario del sistema.</sub>
+</p>
+
+<p align="center">
+  <img src="public/images/RolesOficial.gif" alt="Demostración de mi página web" width="820">
+  <br/><sub>2. Gestión de roles y permisos — cómo cambia la interfaz y el acceso a los módulos según el rol del usuario autenticado.</sub>
+</p>
 
 ## Descripción general
 

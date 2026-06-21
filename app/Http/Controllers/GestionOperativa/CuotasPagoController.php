@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CuotasPagoController extends Controller
 {
+    
     public function index(Request $request)
     {
         $usuario = Auth::user();
@@ -20,17 +21,13 @@ class CuotasPagoController extends Controller
         | PROYECTOS (filtrado por cliente)
         |-------------------------------------------------
         */
-
         if ($usuario->hasRole('cliente')) {
-
             $proyectos = DB::table('proyecto as p')
                 ->join('contrato as c', 'p.id_contrato', '=', 'c.id_contrato')
                 ->where('c.id_cliente', $usuario->id_cliente)
                 ->select('p.*')
                 ->get();
-
         } else {
-
             $proyectos = DB::table('proyecto')->get();
         }
 
@@ -39,15 +36,16 @@ class CuotasPagoController extends Controller
         | CUOTAS DE PAGO
         |-------------------------------------------------
         */
-
         $query = DB::table('cuotas_pago as cp')
             ->join('contrato as con', 'cp.id_contrato', '=', 'con.id_contrato')
             ->join('cliente as cl', 'con.id_cliente', '=', 'cl.id_cliente')
+            ->leftJoin('proyecto as pr', 'pr.id_contrato', '=', 'con.id_contrato') // ◀️ SE AÑADIÓ EL JOIN CON PROYECTO
             ->select(
                 'cp.id_cuota',
                 'cp.id_contrato',
                 'con.numero_contrato',
                 'cl.nombre_razon',
+                'pr.nombre_proyecto', // ◀️ SE SELECCIONÓ EL NOMBRE PARA EL BLADE
                 'cp.numero_cuota',
                 'cp.monto_cuota',
                 'cp.monto_pagado',
@@ -60,17 +58,28 @@ class CuotasPagoController extends Controller
 
         // ✅ FILTRO CLIENTE CORRECTO
         if ($usuario->hasRole('cliente')) {
-
             $query->where('con.id_cliente', $usuario->id_cliente);
+        }
+
+        // 🔍 APLICAR FILTRO POR PROYECTO (Si se seleccionó uno)
+        if ($request->filled('id_proyecto')) {
+            $query->where('pr.id_proyecto', $request->id_proyecto);
+        }
+
+        // 🔍 APLICAR FILTRO POR ESTADO (Si se seleccionó uno)
+        if ($request->filled('estado_cuota')) {
+            $query->where('cp.estado_cuota', $request->estado_cuota);
         }
 
         $cuotas = $query
             ->orderBy('cp.fecha_vencimiento')
             ->paginate(15)
+            ->withQueryString() // ◀️ REQUERIDO PARA QUE LA PAGINACIÓN NO PIERDA EL FILTRO
             ->through(fn ($row) => (array) $row);
 
         return view('operativa.cuotas.index', compact('cuotas', 'proyectos'));
     }
+
 
     public function create()
     {
