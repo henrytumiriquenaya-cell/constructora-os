@@ -14,6 +14,7 @@
             <th>ID</th>
             <th>Maquinaria</th>
             <th>Proyecto</th>
+            <th>Operador</th>
             <th>Fecha Inicio</th>
             <th>Fecha Fin</th>
             <th>Horas Asignadas</th>
@@ -26,6 +27,16 @@
             <td>{{ $asig->id_asig_maq }}</td>
             <td>{{ $asig->maquinaria->nombre ?? 'N/A' }}</td>
             <td>{{ $asig->proyecto->nombre_proyecto ?? 'N/A' }}</td>
+            <td>
+                <div class="fw-semibold">
+                    {{ $asig->empleado->nombres ?? '' }}
+                    {{ $asig->empleado->apellidos ?? '' }}
+                </div>
+
+                <small class="text-muted">
+                    {{ $asig->empleado->cargo ?? '' }}
+                </small>
+            </td>
             <td>{{ $asig->fecha_inicio }}</td>
             <td>{{ $asig->fecha_fin ?? '-' }}</td>
             <td>{{ $asig->horas_asignadas }}</td>

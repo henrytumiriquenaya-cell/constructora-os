@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\RRHH;
 
+use App\Models\AsignacionEmpleado;
+
+use App\Models\Proyecto;
 use App\Http\Controllers\Controller;
 use App\Models\Empleado;
 use Illuminate\Http\Request;
@@ -90,14 +93,49 @@ class EmpleadoController extends Controller
 
     public function asignaciones()
     {
-        $asignaciones = \App\Models\AsignacionEmpleado::with(['empleado', 'proyecto'])->paginate(15);
-        return view('rrhh.asignaciones.index', compact('asignaciones'));
-    }
+        return view('rrhh.asignaciones.index', [
+        'asignaciones' => AsignacionEmpleado::with(['empleado','proyecto'])->paginate(10),
+        'empleados' => Empleado::all(),
+        'proyectos' => Proyecto::all(),
+    ]);
+}
 
-    public function pagos()
+    public function pagos(Request $request)
     {
-        $pagos = \App\Models\PagoEmpleado::with('empleado')->paginate(15);
-        return view('rrhh.pagos.index', compact('pagos'));
+        $query = \App\Models\PagoEmpleado::with('empleado');
+
+        // Filtro por cargo
+        if ($request->filled('cargo')) {
+            $query->whereHas('empleado', function ($q) use ($request) {
+                $q->where('cargo', $request->cargo);
+            });
+        }
+
+        // Filtro por periodo
+        if ($request->filled('periodo_mes')) {
+            $query->where('periodo_mes', $request->periodo_mes);
+        }
+
+        $pagos = $query
+            ->orderByDesc('id_pago_emp')
+            ->paginate(15)
+            ->withQueryString();
+
+        $cargos = Empleado::select('cargo')
+            ->distinct()
+            ->orderBy('cargo')
+            ->pluck('cargo');
+
+        $periodos = \App\Models\PagoEmpleado::select('periodo_mes')
+            ->distinct()
+            ->orderByDesc('periodo_mes')
+            ->pluck('periodo_mes');
+
+        return view('rrhh.pagos.index', compact(
+            'pagos',
+            'cargos',
+            'periodos'
+        ));
     }
 
     public function permisos()

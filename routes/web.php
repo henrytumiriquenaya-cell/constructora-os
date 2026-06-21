@@ -19,30 +19,33 @@ use App\Http\Controllers\GestionOperativa\ProveedorController;
 use App\Http\Controllers\RRHH\EmpleadoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RRHH\FeriadoController;
+use App\Http\Controllers\AsignacionEmpleadoController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 });
 
-Route::middleware(['auth'])->group(function () {
+ Route::middleware(['auth', 'role.scope'])->group(function () {
+    // todo tu sistema operativo
+
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('gestion-operativa')->group(function () {
-        Route::get('/clientes', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'index'])->middleware('permission:cliente')->name('operativa.clientes.index');
-        Route::get('/clientes/create', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'create'])->middleware('permission:cliente')->name('operativa.clientes.create');
-        Route::post('/clientes', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'store'])->middleware('permission:cliente')->name('operativa.clientes.store');
-        Route::get('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'show'])->middleware('permission:cliente')->name('operativa.clientes.show');
-        Route::get('/clientes/{id}/edit', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'edit'])->middleware('permission:cliente')->name('operativa.clientes.edit');
-        Route::put('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'update'])->middleware('permission:cliente')->name('operativa.clientes.update');
-        Route::delete('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'destroy'])->middleware('permission:cliente')->name('operativa.clientes.destroy');
+        Route::get('/clientes', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'index'])->middleware('permission:cliente,S')->name('operativa.clientes.index');
+        Route::get('/clientes/create', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'create'])->middleware('permission:cliente,I')->name('operativa.clientes.create');
+        Route::post('/clientes', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'store'])->middleware('permission:cliente,I')->name('operativa.clientes.store');
+        Route::get('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'show'])->middleware('permission:cliente,S')->name('operativa.clientes.show');
+        Route::get('/clientes/{id}/edit', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'edit'])->middleware('permission:cliente,U')->name('operativa.clientes.edit');
+        Route::put('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'update'])->middleware('permission:cliente,U')->name('operativa.clientes.update');
+        Route::delete('/clientes/{id}', [\App\Http\Controllers\GestionOperativa\ClienteController::class, 'destroy'])->middleware('permission:cliente,D')->name('operativa.clientes.destroy');
 
         Route::get('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'index'])->middleware('permission:proyecto,S')->name('operativa.proyectos.index');
         Route::get('/proyectos/create', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'create'])->middleware('permission:proyecto,I')->name('operativa.proyectos.create');
         Route::post('/proyectos', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'store'])->middleware('permission:proyecto,I')->name('operativa.proyectos.store');
-        Route::get('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'show'])->middleware('permission:proyecto')->name('operativa.proyectos.show');
+        Route::get('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'show'])->middleware('permission:proyecto,S')->name('operativa.proyectos.show');
         Route::get('/proyectos/{id}/edit', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'edit'])->middleware('permission:proyecto,U')->name('operativa.proyectos.edit');
         Route::put('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'update'])->middleware('permission:proyecto,U')->name('operativa.proyectos.update');
         Route::delete('/proyectos/{id}', [\App\Http\Controllers\GestionOperativa\ProyectoController::class, 'destroy'])->middleware('permission:proyecto,D')->name('operativa.proyectos.destroy');
@@ -53,22 +56,22 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/registro_horas_diaria/create', [\App\Http\Controllers\GestionOperativa\RegistroHoraController::class, 'create'])
             ->middleware('permission:registro_horas')->name('operativa.asistencia.create');
 
-        Route::get('/paralizacion_obra', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'index'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.index');
-        Route::get('/paralizacion_obra/create', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'create'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.create');
-        Route::post('/paralizacion_obra', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'store'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.store');
-        Route::get('/paralizacion_obra/{id}/edit', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'edit'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.edit');
-        Route::put('/paralizacion_obra/{id}', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'update'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.update');
-        Route::delete('/paralizacion_obra/{id}', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'destroy'])->middleware('permission:paralizacion')->name('operativa.paralizaciones.destroy');
+        Route::get('/paralizacion_obra', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'index'])->middleware('permission:paralizacion,S')->name('operativa.paralizaciones.index');
+        Route::get('/paralizacion_obra/create', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'create'])->middleware('permission:paralizacion,I')->name('operativa.paralizaciones.create');
+        Route::post('/paralizacion_obra', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'store'])->middleware('permission:paralizacion,I')->name('operativa.paralizaciones.store');
+        Route::get('/paralizacion_obra/{id}/edit', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'edit'])->middleware('permission:paralizacion,U')->name('operativa.paralizaciones.edit');
+        Route::put('/paralizacion_obra/{id}', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'update'])->middleware('permission:paralizacion,U')->name('operativa.paralizaciones.update');
+        Route::delete('/paralizacion_obra/{id}', [\App\Http\Controllers\GestionOperativa\ParalizacionController::class, 'destroy'])->middleware('permission:paralizacio,Dn')->name('operativa.paralizaciones.destroy');
 
         Route::get('/obras_terminadas', [\App\Http\Controllers\GestionOperativa\ObraTerminadaController::class, 'index'])
             ->middleware('permission:obras_terminadas')->name('operativa.finalizadas.index');
 
-        Route::get('/ciudades', [CiudadController::class, 'index'])->middleware('permission:ciudad')->name('operativa.ciudades.index');
-        Route::get('/ciudades/create', [CiudadController::class, 'create'])->middleware('permission:ciudad')->name('operativa.ciudades.create');
-        Route::post('/ciudades', [CiudadController::class, 'store'])->middleware('permission:ciudad')->name('operativa.ciudades.store');
-        Route::get('/ciudades/{id}/edit', [CiudadController::class, 'edit'])->middleware('permission:ciudad')->name('operativa.ciudades.edit');
-        Route::put('/ciudades/{id}', [CiudadController::class, 'update'])->middleware('permission:ciudad')->name('operativa.ciudades.update');
-        Route::delete('/ciudades/{id}', [CiudadController::class, 'destroy'])->middleware('permission:ciudad')->name('operativa.ciudades.destroy');
+        Route::get('/ciudades', [CiudadController::class, 'index'])->middleware('permission:ciudad,S')->name('operativa.ciudades.index');
+        Route::get('/ciudades/create', [CiudadController::class, 'create'])->middleware('permission:ciudad,I')->name('operativa.ciudades.create');
+        Route::post('/ciudades', [CiudadController::class, 'store'])->middleware('permission:ciudad,I')->name('operativa.ciudades.store');
+        Route::get('/ciudades/{id}/edit', [CiudadController::class, 'edit'])->middleware('permission:ciudad,U')->name('operativa.ciudades.edit');
+        Route::put('/ciudades/{id}', [CiudadController::class, 'update'])->middleware('permission:ciudad,U')->name('operativa.ciudades.update');
+        Route::delete('/ciudades/{id}', [CiudadController::class, 'destroy'])->middleware('permission:ciudad,D')->name('operativa.ciudades.destroy');
 
         Route::get('/contratos', [ContratoController::class, 'index'])->middleware('permission:contrato,S')->name('operativa.contratos.index');
         Route::get('/contratos/create', [ContratoController::class, 'create'])->middleware('permission:contrato,I')->name('operativa.contratos.create');
@@ -131,7 +134,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/asignaciones/{id}/edit', [AsignacionMaquinariaController::class, 'edit'])->middleware('permission:asignacion_maquinaria')->name('operativa.maquinarias.asignaciones_edit');
         Route::put('/asignaciones/{id}', [AsignacionMaquinariaController::class, 'update'])->middleware('permission:asignacion_maquinaria')->name('operativa.maquinarias.asignaciones_update');
         Route::delete('/asignaciones/{id}', [AsignacionMaquinariaController::class, 'destroy'])->middleware('permission:asignacion_maquinaria')->name('operativa.maquinarias.asignaciones_destroy');
+           
+        
 
+        Route::get('/asignaciones', [AsignacionEmpleadoController::class, 'index']);
+        Route::post('/asignaciones', [AsignacionEmpleadoController::class, 'store'])
+            ->name('asignaciones.store');
         Route::get('/proveedores', [ProveedorController::class, 'index'])->middleware('permission:proveedor')->name('operativa.proveedores.index');
         Route::get('/proveedores/create', [ProveedorController::class, 'create'])->middleware('permission:proveedor')->name('operativa.proveedores.create');
         Route::post('/proveedores', [ProveedorController::class, 'store'])->middleware('permission:proveedor')->name('operativa.proveedores.store');
@@ -140,12 +148,12 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/proveedores/{id}', [ProveedorController::class, 'destroy'])->middleware('permission:proveedor')->name('operativa.proveedores.destroy');
 
         // ── Materiales CRUD ──────────────────────────────────────────────────
-        Route::get('/materiales', [MaterialController::class, 'index'])->middleware('permission:material')->name('operativa.materiales.index');
-        Route::get('/materiales/create', [MaterialController::class, 'create'])->middleware('permission:material')->name('operativa.materiales.create');
-        Route::post('/materiales', [MaterialController::class, 'store'])->middleware('permission:material')->name('operativa.materiales.store');
-        Route::get('/materiales/{id}/edit', [MaterialController::class, 'edit'])->middleware('permission:material')->name('operativa.materiales.edit');
-        Route::put('/materiales/{id}', [MaterialController::class, 'update'])->middleware('permission:material')->name('operativa.materiales.update');
-        Route::delete('/materiales/{id}', [MaterialController::class, 'destroy'])->middleware('permission:material')->name('operativa.materiales.destroy');
+        Route::get('/materiales', [MaterialController::class, 'index'])->middleware('permission:material,S')->name('operativa.materiales.index');
+        Route::get('/materiales/create', [MaterialController::class, 'create'])->middleware('permission:material,I')->name('operativa.materiales.create');
+        Route::post('/materiales', [MaterialController::class, 'store'])->middleware('permission:material,I')->name('operativa.materiales.store');
+        Route::get('/materiales/{id}/edit', [MaterialController::class, 'edit'])->middleware('permission:material,U')->name('operativa.materiales.edit');
+        Route::put('/materiales/{id}', [MaterialController::class, 'update'])->middleware('permission:material,U')->name('operativa.materiales.update');
+        Route::delete('/materiales/{id}', [MaterialController::class, 'destroy'])->middleware('permission:material,D')->name('operativa.materiales.destroy');
 
         // ── Movimientos de Inventario CRUD ───────────────────────────────────
         Route::post('/inventario/recalcular', [InventarioController::class, 'recalcular'])
@@ -213,5 +221,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/usuarios/{id}', [\App\Http\Controllers\Configuracion\UsuarioController::class, 'destroy'])->middleware('permission:usuario')->name('configuracion.usuarios.destroy');
         Route::post('/usuarios/{id}/restaurar', [\App\Http\Controllers\Configuracion\UsuarioController::class, 'restaurar'])->middleware('permission:usuario')->name('configuracion.usuarios.restaurar');
     });
+  
 });
 

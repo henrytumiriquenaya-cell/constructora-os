@@ -13,45 +13,61 @@ class CuotasPagoController extends Controller
 {
     public function index(Request $request)
     {
+        $usuario = Auth::user();
+
+        /*
+        |-------------------------------------------------
+        | PROYECTOS (filtrado por cliente)
+        |-------------------------------------------------
+        */
+
+        if ($usuario->hasRole('cliente')) {
+
+            $proyectos = DB::table('proyecto as p')
+                ->join('contrato as c', 'p.id_contrato', '=', 'c.id_contrato')
+                ->where('c.id_cliente', $usuario->id_cliente)
+                ->select('p.*')
+                ->get();
+
+        } else {
+
+            $proyectos = DB::table('proyecto')->get();
+        }
+
+        /*
+        |-------------------------------------------------
+        | CUOTAS DE PAGO
+        |-------------------------------------------------
+        */
+
         $query = DB::table('cuotas_pago as cp')
             ->join('contrato as con', 'cp.id_contrato', '=', 'con.id_contrato')
             ->join('cliente as cl', 'con.id_cliente', '=', 'cl.id_cliente')
-            ->leftJoin('proyecto as pr', 'pr.id_contrato', '=', 'con.id_contrato') // ← corregido: FK está en proyecto
             ->select(
                 'cp.id_cuota',
                 'cp.id_contrato',
                 'con.numero_contrato',
                 'cl.nombre_razon',
-                'pr.id_proyecto',
-                'pr.nombre_proyecto',
                 'cp.numero_cuota',
                 'cp.monto_cuota',
                 'cp.monto_pagado',
                 'cp.fecha_vencimiento',
                 'cp.fecha_pago_real',
                 'cp.estado_cuota',
-                'cp.dias_alerta',
-                'cp.fecha_suspension',
-                'cp.cuota_origen',
-                DB::raw('DATEDIFF(CURDATE(), cp.fecha_vencimiento) as dias_retraso')
+                DB::raw('DATEDIFF(CURDATE(), cp.fecha_vencimiento) as dias_retraso'),
+                'cp.estado_cuota as evaluacion_dinamica'
             );
 
-        if ($request->filled('id_proyecto')) {
-            $query->where('pr.id_proyecto', $request->id_proyecto);
+        // ✅ FILTRO CLIENTE CORRECTO
+        if ($usuario->hasRole('cliente')) {
+
+            $query->where('con.id_cliente', $usuario->id_cliente);
         }
 
-        if ($request->filled('estado_cuota')) {
-            $query->where('cp.estado_cuota', $request->estado_cuota);
-        }
-
-        $cuotas = $query->orderBy('cp.fecha_vencimiento')
+        $cuotas = $query
+            ->orderBy('cp.fecha_vencimiento')
             ->paginate(15)
-            ->withQueryString()
             ->through(fn ($row) => (array) $row);
-
-        $proyectos = DB::table('proyecto')
-            ->orderBy('nombre_proyecto')
-            ->get(['id_proyecto', 'nombre_proyecto']);
 
         return view('operativa.cuotas.index', compact('cuotas', 'proyectos'));
     }

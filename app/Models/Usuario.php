@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Cliente;
 use App\Models\Empleado;
+use App\Models\Rol;
+use App\Models\LogCambio;
 
 class Usuario extends Authenticatable
 {
     protected $table = 'usuario';
-
     protected $primaryKey = 'id_usuario';
-
     public $timestamps = false;
+    protected $with = ['roles'];
 
     protected $fillable = [
         'id_cliente',
@@ -22,7 +23,6 @@ class Usuario extends Authenticatable
         'usuario',
         'correo',
         'contrasena',
-        'rol',
         'activo',
         'nombre_completo',
     ];
@@ -32,29 +32,38 @@ class Usuario extends Authenticatable
         'password',
         'remember_token',
     ];
-   
+
+    /* =========================
+       RELACIONES
+    ========================= */
+
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
     }
 
-
     public function empleado()
     {
-        return $this->belongsTo(
-            Empleado::class,
-            'id_empleado',
-            'id_empleado'
-        );
-}
+        return $this->belongsTo(Empleado::class, 'id_empleado', 'id_empleado');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(
+            Rol::class,
+            'usuario_roles',
+            'id_usuario',
+            'id_rol'
+        )->select('roles.id_rol', 'roles.nombre');
+    }
+
+    /* =========================
+       AUTH LARAVEL
+    ========================= */
+
     public function getAuthIdentifierName(): string
     {
         return 'id_usuario';
-    }
-
-    public function getAuthPassword(): string
-    {
-        return (string) ($this->contrasena ?? $this->password ?? '');
     }
 
     public function getAuthIdentifier()
@@ -62,15 +71,45 @@ class Usuario extends Authenticatable
         return $this->id_usuario;
     }
 
+    public function getAuthPassword(): string
+    {
+        return $this->contrasena ?? '';
+    }
+
     public function getRememberTokenName(): ?string
     {
         return null;
     }
 
-    public function logs(): HasMany
+    /* =========================
+       ROLES
+    ========================= */
+
+   public function hasRole(string|array $roles): bool
     {
-        return $this->hasMany(LogCambio::class, 'id_usuario', 'id_usuario');
+        $roles = collect(is_array($roles) ? $roles : [$roles])
+            ->map(fn ($r) => strtolower($r));
+
+        return $this->roles
+            ->pluck('nombre')
+            ->map(fn ($r) => strtolower($r))
+            ->intersect($roles)
+            ->isNotEmpty();
     }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->hasRole($roles);
+    }
+
+    public function roleName(): string
+    {
+        return $this->roles->first()?->nombre ?? 'Sin rol';
+    }
+
+    /* =========================
+       UTILIDADES
+    ========================= */
 
     public function nombreParaMostrar(): string
     {
@@ -81,56 +120,8 @@ class Usuario extends Authenticatable
             ?? 'Usuario';
     }
 
-    public function rolNormalizado(): string
-    {
-        return app(\App\Services\PermissionService::class)->normalizeRole((string) $this->rol);
-    }
-
     public function estaActivo(): bool
     {
-        if (! isset($this->activo)) {
-            return true;
-        }
-
-        return in_array(strtolower((string) $this->activo), ['1', 'true', 's', 'si', 'sí', 'activo'], true)
-            || $this->activo === 1
-            || $this->activo === true;
-    }
-
-    public function hasRole(string|array $roles): bool
-    {
-        $roles = is_array($roles) ? $roles : [$roles];
-        $currentRole = mb_strtolower(trim((string) $this->rol));
-
-        $aliases = [
-            'admin' => ['admin', 'administrador', 'adm', 'adm.'],
-            'gerente' => ['gerente'],
-            'contab' => ['contab', 'contab.', 'contador'],
-            'jefe obra' => ['jefe obra', 'jefe_obra', 'j.obra', 'jefe de obra'],
-            'logist' => ['logist', 'logist.', 'logistica', 'logística'],
-            'rrhh' => ['rrhh', 'recursos humanos'],
-            'cliente' => ['cliente'],
-            'lector' => ['lector'],
-        ];
-
-        foreach ($roles as $role) {
-            $normalized = mb_strtolower(trim((string) $role));
-            if ($currentRole === $normalized) {
-                return true;
-            }
-
-            if (isset($aliases[$normalized]) && in_array($currentRole, $aliases[$normalized], true)) {
-                return true;
-            }
-
-            foreach ($aliases as $knownRoleAliases) {
-                if (in_array($normalized, $knownRoleAliases, true) && in_array($currentRole, $knownRoleAliases, true)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return (bool) $this->activo;
     }
 }
-

@@ -7,6 +7,18 @@ use Illuminate\Support\Str;
 
 class PermissionService
 {
+    public function getUserRoles(?Usuario $user): array
+    {
+        if (!$user) return [];
+
+        return $user->roles
+            ->pluck('nombre')
+            ->map(fn ($r) => $this->normalizeRole($r))
+            ->unique()
+            ->values()
+            ->toArray();
+    }
+
     public function normalizeRole(?string $rol): string
     {
         $rol = Str::lower(trim((string) $rol));
@@ -15,6 +27,7 @@ class PermissionService
             if ($rol === $canonical) {
                 return $canonical;
             }
+
             foreach ($meta['aliases'] ?? [] as $alias) {
                 if ($rol === Str::lower($alias)) {
                     return $canonical;
@@ -27,77 +40,95 @@ class PermissionService
 
     public function permissionsFor(?Usuario $user, string $table): array
     {
-        if (! $user) {
-            return [];
-        }
+        if (! $user) return [];
 
         $table = $this->normalizeTable($table);
-        $role = $this->normalizeRole($user->rol);
 
-        if ($role === 'administrador') {
+        $roles = $this->getUserRoles($user);
+
+        // 🔥 ADMIN GLOBAL
+        if (in_array('admin', $roles, true)) {
             return ['S', 'I', 'U', 'D'];
         }
 
         $perms = [];
 
-        if (in_array($role, config('permissions.global_read_roles', []), true)) {
-            $perms[] = 'S';
-        }
+        foreach ($roles as $role) {
 
-        switch ($role) {
-            case 'gerente':
-                if ($table === 'proyecto') {
-                    $perms[] = 'U';
-                }
-                break;
+            if (in_array($role, config('permissions.global_read_roles', []), true)) {
+                $perms[] = 'S';
+            }
 
-            case 'contador':
-                if (in_array($table, config('permissions.finanzas', []), true)) {
-                    $perms = array_merge($perms, ['I', 'U']);
-                }
-                break;
+            switch ($role) {
 
-            case 'jefe_obra':
-                if (in_array($table, config('permissions.obra', []), true)) {
-                    $perms = array_merge($perms, ['I', 'U']);
-                }
-                if ($table === 'uso_material') {
-                    $perms = array_merge($perms, ['I', 'U']);
-                }
-                if ($table === 'proyecto') {
-                    $perms[] = 'U';
-                }
-                if (in_array($table, config('permissions.jefe_obra_insert_only', []), true)) {
-                    $perms[] = 'I';
-                }
-                break;
+                case 'gerente':
+                   case 'gerente':
+                        $perms = array_merge($perms, ['S','I','U']);
+                        break;
 
-            case 'logistica':
-                if (in_array($table, config('permissions.compras', []), true) || $table === 'mantenimiento') {
-                    $perms = array_merge($perms, ['I', 'U']);
-                }
-                break;
+                case 'contador':
+                    $perms = ['S'];
 
-            case 'rrhh':
-                if (in_array($table, config('permissions.rrhh_tables', []), true)) {
-                    $perms = array_merge($perms, ['I', 'U']);
-                }
-                if (in_array($table, ['pago', 'pago_empleado'], true)) {
-                    $perms[] = 'I';
-                }
-                break;
+                    if (in_array($table, config('permissions.finanzas', []), true)) {
+                        $perms = array_merge($perms, ['I','U','S']);
+                    }
+                    break;
 
-            case 'cliente':
+                case 'logistica':
+                    if (in_array($table, config('permissions.compras', []), true)) {
+                        $perms = array_merge($perms, ['S','I','U']);
+                    }
+                    break;
 
-                $perms = in_array($table, config('permissions.cliente_tables', []), true)
-                    ? ['S']
-                    : [];
+                case 'rrhh':
+                    if (in_array($table, config('permissions.rrhh_tables', []), true)) {
+                        $perms = array_merge($perms, ['S','I','U']);
+                    }
+                    break;
 
-                break;
+                case 'cliente':
+                    if (in_array($table, config('permissions.cliente_tables', []), true)) {
+                        $perms[] = 'S';
+                    }
+                    break;
 
-            case 'lector':
-                $perms = in_array($table, config('permissions.lector_tables', []), true) ? ['S'] : [];
-                break;
+                case 'lector':
+                    if (in_array($table, config('permissions.lector_tables', []), true)) {
+                        $perms[] = 'S';
+                    }
+                    break;
+                case 'director':
+                    $perms = array_merge($perms, ['S','I','U']);
+                    break;
+
+                case 'residente':
+                    if (
+                        in_array($table, config('permissions.obra', []), true)
+                        || in_array($table, ['proyecto','maquinaria','asignacion_maquinaria'], true)
+                    ) {
+                        $perms = array_merge($perms, ['S','I','U']);
+                    }
+                    break;
+
+                case 'supervisor':
+                    if (
+                        in_array($table, [
+                            'registro_horas',
+                            'paralizacion',
+                            'uso_material',
+                            'asignacion_empleado'
+                        ], true)
+                    ) {
+                        $perms = array_merge($perms, ['S','I']);
+                    }
+                    break;
+
+                case 'obrero':
+                    if ($table === 'registro_horas') {
+                        $perms[] = 'S';
+                    }
+                    break;
+            }
         }
 
         return array_values(array_unique($perms));
@@ -105,9 +136,11 @@ class PermissionService
 
     public function can(?Usuario $user, string $table, string $operation): bool
     {
-        $operation = strtoupper($operation);
-
-        return in_array($operation, $this->permissionsFor($user, $table), true);
+        return in_array(
+            strtoupper($operation),
+            $this->permissionsFor($user, $table),
+            true
+        );
     }
 
     public function canSelect(?Usuario $user, string $table): bool
@@ -142,21 +175,17 @@ class PermissionService
 
     public function tableForRoute(?string $routeName): ?string
     {
-        if (! $routeName) {
-            return null;
-        }
-
-        return config("permissions.route_tables.{$routeName}");
+        return $routeName
+            ? config("permissions.route_tables.{$routeName}")
+            : null;
     }
 
     public function normalizeTable(string $table): string
     {
-        $aliases = [
+        return [
             'registro_horas_diario' => 'registro_horas',
             'paralizacion_obra' => 'paralizacion',
-        ];
-
-        return $aliases[$table] ?? $table;
+        ][$table] ?? $table;
     }
 
     public function showOperativaMenu(?Usuario $user): bool
