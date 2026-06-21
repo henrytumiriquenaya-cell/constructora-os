@@ -1,59 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+```
+   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐
+   │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │
+   │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │  │ ▓▓▓▓▓▓ │
+   └───┬────┘  └───┬────┘  └───┬────┘  └───┬────┘  └───┬────┘
+       └───────────┴───────────┼───────────┴───────────┘
+                      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                      ▓ CONSTRUCTORA OS ▓
+                      ▓                 ▓
+                      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+            One sistema · todas las obras · un solo dato real
+```
+
+<p align="center"><b>Gestión integral de constructoras</b> · contratos · cuotas · inventario · maquinaria · RRHH · auditoría</p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img alt="build" src="https://img.shields.io/badge/build-passing-brightgreen">
+  <img alt="laravel" src="https://img.shields.io/badge/laravel-10.x-FF2D20">
+  <img alt="db" src="https://img.shields.io/badge/mysql-8.0-4479A1">
+  <img alt="license" src="https://img.shields.io/badge/license-pendiente-lightgrey">
+  <img alt="status" src="https://img.shields.io/badge/estado-en%20desarrollo-blue">
 </p>
 
-## About Laravel
+<p align="center">
+  <a href="#descripción-general">Descripción</a> ·
+  <a href="#módulos-del-sistema">Módulos</a> ·
+  <a href="#stack-tecnológico">Stack</a> ·
+  <a href="#instalación">Instalación</a> ·
+  <a href="#arquitectura">Arquitectura</a> ·
+  <a href="#flujo-de-trabajo--git">Git workflow</a>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Constructora OS reemplaza el manejo disperso de información de una constructora —hojas de cálculo, registros en papel, WhatsApp— por **un único sistema donde administración, obra, logística y RRHH leen y escriben sobre los mismos datos**, en tiempo real, con trazabilidad completa de cada cambio.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+  cliente · contrato · cotización
+            │
+            ▼
+  ┌────────────────────────────────────────────────────────┐
+  │              CONSTRUCTORA OS                           │
+  │  ────────────────────────────────────────────────────  │
+  │   Proyectos ──▶ Cuotas de pago ──▶ Alertas            │
+  │       │                                                │
+  │       ├─▶ Asig. personal / maquinaria                  │
+  │       ├─▶ Paralizaciones / reanudación                 │
+  │       └─▶ Avance %                                     │
+  │                                                         │
+  │   Compras (almacén central)                             │
+  │       └─▶ Inventario ──▶ Uso de material ──▶ Proyecto │
+  │                                                    c    │
+  │   Triggers MySQL: totales · stock · estados             │
+  │   AuditObserver: registro de cambios                    │
+  └─────────────────────────────────────────────────────────┘
+            │
+            ▼
+   reportes de costos · log de auditoría · planillas
+```
 
-## Learning Laravel
+## Descripción general
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+El sistema cubre el ciclo de vida completo de un proyecto de construcción:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Captación y contratación** — clientes, cotizaciones y contratos.
+2. **Ejecución del proyecto** — avance, asignación de personal y maquinaria, paralizaciones.
+3. **Logística y materiales** — compras a nivel de almacén central, inventario y trazabilidad de uso por proyecto mediante movimientos de entrada/salida.
+4. **Finanzas del proyecto** — cuotas de pago, vencimientos, mora y reanudación de obra tras regularización.
+5. **Recursos humanos** — empleados, asignaciones a obra, control de horas, planillas, permisos.
+6. **Reportes y auditoría** — resumen de costos, alertas operativas y log de auditoría sobre los modelos críticos.
 
-## Laravel Sponsors
+## Por qué existe
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Antes | Con Constructora OS |
+|---|---|
+| Inventario por proyecto, duplicado y desincronizado | Almacén central único; el material se asigna al proyecto recién al usarse |
+| Totales y estados calculados a mano en distintos lugares | Triggers de MySQL como única fuente de verdad para esos cálculos |
+| Sin registro de quién cambió qué | Auditoría automática vía Observers de Eloquent |
+| Acceso uniforme sin distinción de rol | Permisos por rol: admin, gerente, contab, jefe de obra, logística, RRHH, cliente |
 
-### Premium Partners
+## Módulos del sistema
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+`Maestros` Ciudades · Catálogo de maquinaria · Materiales
+`Gestión operativa` Clientes · Contratos · Proyectos · Cotizaciones · Cuotas de pago · Compras · Inventario · Uso de material · Movimientos · Paralizaciones · Obras terminadas
+`RRHH` Empleados · Asignación de personal · Control de horas · Asignación de maquinaria · Pagos/planillas · Permisos y trámites
+`Reportes` Resumen de costos · Alertas · Log de auditoría
+`Configuración` Usuarios · Feriados
 
-## Contributing
+## Stack tecnológico
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Capa | Tecnología |
+|---|---|
+| Backend | Laravel (PHP) |
+| Base de datos | MySQL — triggers y procedimientos para lógica de negocio crítica |
+| Frontend | Blade · Bootstrap 5 · Tailwind CSS |
+| Build tool | Vite |
+| Control de versiones | Git / GitHub |
 
-## Code of Conduct
+## Instalación
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone <url-del-repositorio>
+cd constructora-os
 
-## Security Vulnerabilities
+composer install
+npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+cp .env.example .env
+php artisan key:generate
+# Configura DB_DATABASE=empresa_constructora5, DB_USERNAME, DB_PASSWORD en .env
 
-## License
+php artisan migrate     # incluye triggers y procedimientos
+php artisan db:seed     # opcional
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+npm run dev              # desarrollo
+npm run build            # producción
+
+php artisan serve
+```
+
+**Requisitos:** PHP ≥ 8.2 · Composer · Node.js ≥ 20.19 + npm · MySQL ≥ 8.0
+
+## Arquitectura
+
+> **Principio rector:** la lógica de negocio crítica vive en **triggers de MySQL** (`trg_detalle_compra_after_insert`, `trg_movimiento_inventario_after_insert`, `trg_cuota_estado_al_pagar`, entre otros). Los controladores de Laravel **no la duplican** — insertan/actualizan de forma que esos triggers se disparen correctamente.
+
+- **Eloquent vs. `DB::table()`** — los Observers de auditoría solo se disparan con Eloquent. Cualquier módulo que necesite quedar auditado debe usar modelos Eloquent, no query builder puro.
+- **Doble registro de auditoría** — todo modelo auditable debe estar tanto en `AppServiceProvider` (`$tablasExcluidas`) como en `AuditObserver` (`$tablasAuditadas`). Falta uno de los dos y el log de auditoría queda silenciosamente roto.
+- **Compras a nivel de almacén central** — las órdenes de compra no llevan `id_proyecto`; el material entra al inventario general y se asigna a un proyecto recién al registrarse su uso (`uso_material`, movimiento de salida).
+
+## Flujo de trabajo / Git
+
+- `develop` — rama de integración del equipo. `main` — solo releases estables.
+- Ramas con prefijo según naturaleza: `feature/...` para funcionalidad nueva, `fix/...` para correcciones.
+- PRs siempre apuntan a `develop`, nunca directo a `main`.
+- Commits separados por módulo/responsabilidad, formato `feat(modulo): ...` / `fix(modulo): ...`.
+
+## Equipo
+
+Desarrollado por el equipo de Constructora OS.
+
+## Licencia
+
+_Pendiente de definir._
